@@ -1,0 +1,73 @@
+<?xml version="1.0" ?>
+<openerp>
+	<data>
+        <!--Period lock form view-->
+        <record id='form_view_memco_lesser_request1' model='ir.ui.view'>
+            <field name='name'>form.view.memco.lesser.request1</field>
+            <field name='model'>memco.lesser.request</field>
+            <field name='type'>form</field>
+            <field name='arch' type='xml'> 
+                <form string='Memco Lesser Request' version='7.0'>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="product_id"/>
+                                <field name="mo" />
+                                <field name="qty" />
+                                <field name="notes" />
+                            </group>
+                            <group>
+                            <div class="oe_right oe_button_box" name="buttons"> 
+                                <button id="do_button" class="oe_inline oe_stat_button" string="Delivery Order" name= "%(stock.action_picking_tree_ready)d" type="action" groups="stock.group_stock_user" icon="fa-arrows-v"/>
+                                <!--button id="mo_button" class="oe_inline oe_stat_button" string="Move" name= "%(stock.view_move_tree)d" type="action" groups="stock.group_stock_user" icon="fa-arrows-v"/-->
+                                <button id="is_button" class="oe_inline oe_stat_button" string="Incoming Shipment" name= "%(stock.action_picking_tree_ready)d" type="action" groups="stock.group_stock_user" icon="fa-arrows-v"/>
+                            </div>
+                            </group>
+                        </group>
+                        
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <!--Period lock tree view-->
+
+        <record id='tree_view_memco_lesser_request1' model='ir.ui.view'>
+            <field name='name'>tree.view.memco.lesser.request1</field>
+            <field name='model'>memco.lesser.request</field>
+            <field name='type'>tree</field>
+            <field name='arch' type='xml'>
+                <tree string='Period Lock Information'>
+                    <field name="product_id"/>
+                    <field name="mo" />
+                    <field name="qty" />
+                    <field name="request_user"/>
+                    <field name="notes" />
+                    <field name="create_date" />
+                </tree>
+            </field>
+        </record>
+        
+        <record id="memco_lesser_request_search_view1" model="ir.ui.view">
+            <field name="name">memco.lcform.search.view</field>
+            <field name="model">memco.lesser.request</field>
+            <field name="arch" type="xml">
+                <search string="Memco lcform">
+                    <group  expand='0' string='Group by...'>
+                        <filter string='User' icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'request_user'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id='action_memco_lesser_request' model='ir.actions.act_window'>
+            <field name='name'>Lesser Request</field>
+            <field name='res_model'>memco.lesser.request</field>
+            <field name='view_type'>form</field>
+            <field name='view_mode'>tree,form</field>
+        </record>
+        
+        <menuitem id="memco_lesser_request" name="Requested Lesser" sequence="8" parent="stock.menu_traceability" action='action_memco_lesser_request'/>
+
+	</data>
+</openerp>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        
+        <record id="view_stock_move_form_view_memco" model="ir.ui.view">
+            <field name="name">stock.move.form.view.memco</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_form"/>
+            <field name="arch" type="xml">
+                <data>
+                <xpath expr="/form/sheet/group/group/field[@name='origin']" position='after'>
+                        <field name="supplier_ids" widget="many2many_tags"/>
+                        <field name="genarate_pr" />
+                        <field name="unit_local_c_cost"/>
+                        <field name="unit_inter_c_cost"/>
+                        <field name="unit_lc_cost"/>
+                        <field name="picking_id" />
+                        <field name="additional_product" />
+                        <field name="is_approved" help="When warehouse keeper approved for this move" groups="stock.group_stock_manager,stock.group_stock_user"/>
+                        <field name="l_cost"/>
+                        <field name="i_cost"/>
+                        <field name="lc_cost"/>
+                </xpath>
+                <xpath expr="//button[@name='action_done']" position="after">
+                    <button name="approved_warehouse_man" string="Approved" 
+                                type="object" 
+                                class="oe_highlight"
+                                attrs="{'invisible':['|',('is_approved','=',True),('state', '!=', 'assigned')]}"
+                                groups="stock.group_stock_manager,stock.group_stock_user"/>
+                </xpath>
+                <field name="reserved_quant_ids" position="after">
+                    <field name="notes" placeholder='Extra notes'/>
+                </field>
+                </data>
+            </field>
+        </record>
+        
+        <record id="view_stock_move_form_view_memco1" model="ir.ui.view">
+            <field name="name">stock.move.form.view.memco1</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_picking_form"/>
+            <field name="arch" type="xml">
+                <data>
+                <xpath expr="/form/group/group/field[@name='date_expected']" position='after'>
+                        <field name="unit_local_c_cost"/>
+                        <field name="unit_inter_c_cost"/>
+                        <field name="unit_lc_cost"/>
+                        <field name="picking_id" />
+                </xpath>
+                </data>
+            </field>
+        </record>
+        
+        <record id="view_tree_stock_move_memco" model="ir.ui.view">
+        <field name="name">stock.move.memco</field>
+        <field name="model">stock.move</field>
+        <field name="arch" type="xml">
+            <tree string="Moves" create="false" editable="top">
+                    <field name="product_id" on_change="onchange_product_id(product_id,location_id,location_dest_id, False)"/>
+                    <field name="product_uom_qty" invisible='1'/>
+                    <!--field name="product_tmpl_id"/-->
+                    <field name="product_uom"  string="Unit of Measure" groups="product.group_uom" invisible='1'/>
+                    <field name="supplier_ids" widget="many2many_tags" readonly='0'/>
+                    <field name="origin" invisible='1'/>
+                    <field name="product_packaging" domain="[('product_tmpl_id','=',product_tmpl_id)]" groups="product.group_stock_packaging" invisible="1"/>
+                    <field name="picking_id" invisible="1"/>
+                    <field name="location_id" groups="stock.group_locations" invisible='1'/>
+                    <field name="location_dest_id" groups="stock.group_locations" invisible='1'/>
+                    <field name="create_date" groups="base.group_no_one" invisible='1'/>
+                    <field name="date" string="Date" groups="base.group_no_one" invisible="1"/>
+                    <field name="date_expected" string="Date Expected" invisible="1"/>
+                    <field name="state"/>
+                </tree>
+        </field>
+    </record>
+        
+        
+<!--        <record id="act_product_stock_move_open_memco" model="ir.actions.act_window">-->
+<!--            <field name="context">{'tree_view_ref': 'memco_project.view_tree_stock_move_memco'}</field>-->
+<!--            <field name="domain">[('id','in',move_lines[0].id)]</field>-->
+<!--            <field name="name">Moves</field>-->
+<!--            <field name="res_model">stock.move</field>-->
+<!--        </record>-->
+
+        <!--act_window
+            context="{'tree_view_ref': 'memco_project.view_tree_stock_move_memco'}"
+            id="act_product_location_open_memco"
+            name="Moves"
+            res_model="stock.move"
+            src_model="mrp.production"/-->
+        
+        
+        <record id="view_stock_move_filter" model="ir.ui.view">
+            <field name="name">stock.move.search.select</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_search"/>
+            <field name="arch" type="xml">
+                    <field name="date" position="after">
+                        <field name="origin" string="Reference"/>
+                    </field>
+                    <xpath expr="/search/filter[@name='done']" position="after">
+                        <filter name="origin" string="Origin" domain="[('state','=','confirmed')]" />
+                    </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

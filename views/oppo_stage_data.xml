@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+<!--        <record model="crm.case.stage" id="stage_lead2">-->
+<!--            <field name="name">Design</field>-->
+<!--            <field eval="1" name="case_default"/>-->
+<!--            <field name="state">pending</field>-->
+<!--            <field eval="0" name="probability"/>-->
+<!--            <field eval="0" name="sequence"/>-->
+<!--            <field name="type">opportunity</field>-->
+<!--        </record>-->
+        
+        
+        
+        <record model="crm.case.stage" id="stage_design">
+            <field name="name">Project Design</field>
+            <field name="case_default">1</field>
+            <field name="probability">20</field>
+            <field name="on_change">1</field>
+            <field name="sequence">40</field>
+            <field name="type">opportunity</field>
+        </record>
+        <record model="crm.case.stage" id="stage_design_ready">
+            <field name="name">Design Ready</field>
+            <field name="case_default">1</field>
+            <field name="probability">30</field>
+            <field name="on_change">1</field>
+            <field name="sequence">40</field>
+            <field name="type">opportunity</field>
+        </record>
+        <record model="crm.case.stage" id="stage_re_design">
+            <field name="name">Re-Design</field>
+            <field name="case_default">1</field>
+            <field name="probability">25</field>
+            <field name="on_change">1</field>
+            <field name="sequence">40</field>
+            <field name="type">opportunity</field>
+        </record>
+        <record model="crm.case.stage" id="stage_quote_ready">
+            <field name="name">Quotation Ready</field>
+            <field name="case_default">1</field>
+            <field name="probability">50</field>
+            <field name="on_change">1</field>
+            <field name="sequence">40</field>
+            <field name="type">opportunity</field>
+        </record>
+        <record model="crm.case.stage" id="stage_sent_quote">
+            <field name="name">Quotation Sent</field>
+            <field name="case_default">1</field>
+            <field name="probability">60</field>
+            <field name="on_change">1</field>
+            <field name="sequence">40</field>
+            <field name="type">opportunity</field>
+        </record>
+         <record model="crm.case.stage" id="stage_sent_joborder">
+            <field name="name">Job Order Sent</field>
+            <field name="case_default">1</field>
+            <field name="probability">70</field>
+            <field name="on_change">1</field>
+            <field name="sequence">40</field>
+            <field name="type">opportunity</field>
+        </record>
+    </data>
+</openerp>

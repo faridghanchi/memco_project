@@ -1,0 +1,27 @@
+<openerp>
+<data>
+        <record forcecreate="True" id="ir_cron_scheduler_sms" model="ir.cron">
+           <field name="name">Cron for sms</field>
+           <field eval="True" name="active" />
+           <field name="user_id" ref="base.user_root" />
+           <field name="interval_number">1</field>
+           <field name="interval_type">days</field>
+           <field name="numbercall">-1</field>
+           <field eval="'stock.picking'" name="model" />
+           <field eval="'run_mail_cron'" name="function" />
+        </record>
+        
+        <record forcecreate="True" id="ir_cron_expire_date_LC_form" model="ir.cron">
+           <field name="name">Cron for Before 15 days from Shipping date send mail</field>
+           <field eval="True" name="active" />
+           <field name="user_id" ref="base.user_root" />
+           <field name="interval_number">1</field>
+           <field name="interval_type">days</field>
+           <field name="numbercall">-1</field>
+           <field eval="'memco.lcform'" name="model" />
+           <field eval="'run_cron_expiry_lcform'" name="function" />
+        </record>
+
+</data>
+
+</openerp>

@@ -1,0 +1,85 @@
+<?xml version="1.0" ?>
+<openerp>
+	<data>
+        <!--Period lock form view-->
+        <record id='form_view_memco_commission' model='ir.ui.view'>
+            <field name='name'>form.view.memco.commission</field>
+            <field name='model'>memco.commission</field>
+            <field name='type'>form</field>
+            <field name='arch' type='xml'> 
+                <form string='Commission Certificate' version='7.0'>
+                    <header>
+                        <button name="button_approval" states="draft" string="Confirmed" type="object" groups="base.group_user"/>
+                        <button name="button_received_certifcate" states="confirmed" string="Received C.C" type="object" groups="base.group_user" help="If Received Commission Certificate then press"/>
+                        <field name="state" widget='statusbar' />
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="delivery_id"/>
+                                <field name="received_date" />
+                                <field name="create_date" />
+                            </group>
+                        </group>
+                        <separator string="Lines"/>
+						<group>
+							<group>
+								<field name="line_id">
+								<tree>
+								    <field name="project_id" />
+								    <field name="contract_id" />
+								</tree>
+								<form><group>
+								    <field name="project_id" />
+								    <field name="contract_id" /></group>
+								</form>
+								</field>
+							</group>
+						</group>
+						<group>
+						<group><field name="user_id"/><field name="notes"/></group>
+						</group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <!--Period lock tree view-->
+
+        <record id='tree_view_memco_commission' model='ir.ui.view'>
+            <field name='name'>tree.view.memco.commission</field>
+            <field name='model'>memco.commission</field>
+            <field name='type'>tree</field>
+            <field name='arch' type='xml'>
+                <tree string='Period Lock Information'>
+                    <field name="delivery_id"/>
+                    <field name="create_date"/>
+                    <field name='user_id'/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        
+   		<record id="memco_commission_search_view1" model="ir.ui.view">
+        <field name="name">memco.commission.search.view</field>
+        <field name="model">memco.commission</field>
+            <field name="arch" type="xml">
+                <search string="Memco Commission">
+                    <group  expand='0' string='Group by...'>
+                        <filter string='Received by' icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'user_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id='action_memco_commission' model='ir.actions.act_window'>
+            <field name='name'>Memco Commission</field>
+            <field name='res_model'>memco.commission</field>
+            <field name='view_type'>form</field>
+            <field name='view_mode'>tree,form</field>
+        </record>
+        
+        <menuitem id="memco_commission_sub_menu" name="Memco Commission" sequence="8" parent="base.menu_sales" action='action_memco_commission'/>
+
+	</data>
+</openerp>

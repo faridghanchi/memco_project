@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="view_stock_picking_memco" model="ir.ui.view">
+            <field name="name">stock.picking.fo.memco1</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <!--xpath expr="/form/header" position="inside">
+                        <button name="%(action_inter_invoice_carrier1)d" string="Internation Carrier Invoice" states="done" type="action" groups="base.group_user"/>
+                        <button name="%(action_inter_invoice_carrier1)d" string="Local Carrier Invoice" states="done" type="action" groups="base.group_user"/>
+                    </xpath-->
+                    
+                    <xpath expr="/form/header/field[@name='state']" position="replace">
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,partially_available,assigned,ready_to_shipping,shipping_process,done" statusbar_colors='{"shipping_except":"red","invoice_except":"red","waiting_date":"blue"}'/>
+                    </xpath>
+
+                    <field name="origin" position="after">
+                        <field name="notification_date" />
+                    </field>
+                    <xpath expr="/form/header/button[@name='do_enter_transfer_details']" position="replace">
+                        <button name="do_enter_transfer_details" states="shipping_process,partially_available,assigned" string="Transfer" groups="stock.group_stock_user" type="object" class="oe_highlight"/>
+                    </xpath>
+                    <xpath expr="/form/header/button[@name='action_cancel']" position="replace">
+                    <button name="action_cancel" states="assigned,confirmed,partially_available,draft,waiting,ready_to_shipping,shipping_process" string="Cancel Transfer" groups="base.group_user" type="object"/>
+                    </xpath>
+
+                    
+                    <xpath expr="/form/header" position="inside">
+                        <button name="do_ready_shipping" string="Ready to Shipping" states="assigned,partially_available" type="object" groups="base.group_user" class="oe_highlight"/>
+                        <button name="do_shipping_process" string="Shipping Process" states="ready_to_shipping" type="object" groups="base.group_user" class="oe_highlight"/>
+                    </xpath>
+                    
+                    <xpath expr="//form/sheet/notebook/page[@string='Additional Info']" position="replace">
+                        <page string="Shipping Information">
+                        <group string="General Informations">
+                            <group>
+                                <field name="move_type"/>
+                                <field name="picking_type_id"/>
+                                <field name="picking_type_code" invisible="1"/>
+                                <field name="quant_reserved_exist" invisible="1"/>
+                                <field name="location_id" invisible="1"/>
+                                <field name="location_dest_id" invisible="1"/>
+                            </group>
+                            <group>
+                                <field name="company_id" groups="base.group_multi_company" widget="selection"/>
+                                <field name="date_done" groups="base.group_no_one"/>
+                                <field name="group_id"/>
+                                <field name="priority"/>
+                            </group>
+                        </group>
+                        <group string="International Carrier Information">
+                                <field name='i_carrier_cost' readonly='1'/>
+                                <field name="i_carrier_extra_cost" nolabel="1">
+                                    <tree>
+                                        <field name="carrier_company" />
+                                        <field name='total_cost' string='Cost'/>
+                                        <field name="state"/>
+                                        <button name="%(memco_project.action_inter_invoice_carrier1)d"
+                                                string="Create Invoice" type="action"
+                                                icon="gtk-go-forward" attrs="{'invisible': [('state','=','done')]}"/>
+                                    </tree>
+                                    <form>
+                                        <group>
+                                        <field name='carrier_company' attrs="{'readonly':[('state','!=','draft')]}"/>
+                                        <field name='m_carrier_tracking_ref' attrs="{'readonly':[('state','!=','draft')]}"/>
+                                        <field name='m_number_of_packages' attrs="{'readonly':[('state','!=','draft')]}"/>
+                                        <field name='m_volume' attrs="{'readonly':[('state','!=','draft')]}"/>
+                                        <field name="state" invisible='1'/>
+                                        <field name='total_cost' readonly='1'/>
+                                        </group>
+                                        <field name='m_cost_line' attrs="{'readonly':[('state','!=','draft')]}">
+                                            <tree editable="top">
+                                                <field name="product" />
+                                                <field name="cost" />
+                                            </tree>
+                                        </field>
+                                    </form>
+                                </field>
+                        </group>
+                        <group string="Local Carrier Informations">
+                                <field name='l_carrier_cost' readonly='1'/>
+                                <field name="l_carrier_extra_cost" nolabel='1'>
+                                    <tree>
+                                        <field name="carrier_company" />
+                                        <field name='total_cost' string='Cost'/>
+                                        <field name="state"/>
+                                        <button name="%(memco_project.action_local_invoice_carrier1)d"
+                                                string="Create Invoice" type="action"
+                                                icon="gtk-go-forward" attrs="{'invisible': [('state','=','done')]}"/>
+                                    </tree>
+                                    <form>
+                                        <group>
+                                        <field name='carrier_company' attrs="{'readonly':[('state','!=','draft')]}"/>
+                                        <field name='m_carrier_tracking_ref' attrs="{'readonly':[('state','!=','draft')]}"/>
+                                        <field name='m_number_of_packages' attrs="{'readonly':[('state','!=','draft')]}"/>
+                                        <field name='m_volume' attrs="{'readonly':[('state','!=','draft')]}"/>
+                                        <field name="state" invisible='1'/>
+                                        <field name='total_cost' readonly='1'/>
+                                        </group>
+                                        <field name='m_cost_line' attrs="{'readonly':[('state','!=','draft')]}">
+                                            <tree editable="top">
+                                                <field name="product" />
+                                                <field name="cost" />
+                                            </tree>
+                                        </field>
+                                    </form>
+                                    </field>
+                        </group>
+                        <group>
+                            <field name="lc_cost" />
+                        </group>
+                        <!--group string="Carrier Information">
+                                <group colspan='4' cols='4'>
+                                <group>
+                                    <field name="carrier_id"/>
+                                    <field name="carrier_tracking_ref"/>
+                                    <field name="carrier_cost" />
+                                </group>
+                                <group>
+                                    <label for="weight" string="Weight"/>
+                                    <div>
+                                        <field name="weight" class="oe_inline"/>
+                                        <field name="weight_uom_id" nolabel="1" class="oe_inline"/>
+                                    </div>
+                                    <field name="weight_net" groups="base.group_no_one"/>
+                                    <field name="number_of_packages"/>
+                                </group>
+                                </group>
+                                <field name="carrier_extra_cost" nolabel="1">
+                                    <tree editable="top">
+                                        <field name="product" />
+                                        <field name="cost" />
+                                    </tree>
+                                </field>
+                        </group>
+                        <group string="Local Carrier Informations">
+                                <group colspan='4' cols='4'>
+                                <group>
+                                    <field name="l_carrier_id"/>
+                                    <field name="l_carrier_tracking_ref"/>
+                                    <field name="l_carrier_cost" />
+                                </group>
+                                <group>
+                                    <field name="l_number_of_packages"/>
+                                </group>
+                                </group>
+                                <field name="l_carrier_extra_cost" nolabel='1'>
+                                    <tree editable="top">
+                                        <field name="product" />
+                                        <field name="cost" />
+                                    </tree>
+                                </field>
+                        </group-->
+                        <!--group>
+                            <field name="done_carrier_invoice" />
+                            <field name="done_l_carrier_invoice" />
+                        </group-->
+                        </page>
+                        <page string='Notes'>
+                            <field name="description" placeholder="Add a Description..."/>
+                        </page>
+                    </xpath>
+                    
+                </data>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="stock_picking_kanban_view">
+            <field name="name">Stock picking</field>
+            <field name="model">stock.picking</field>
+            <field name="type">kanban</field>
+            <field name="arch" type="xml">
+            <kanban default_group_by="state" create="0">
+                <!--Filtered By -->
+                <field name="state"/>
+                <field name="name"/>
+                <field name="color"/>
+                <templates>
+                    
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_card oe_kanban_global_click">
+                                <div class="oe_dropdown_toggle oe_dropdown_kanban">
+                                    <span class="oe_e">í</span>
+                                    <ul class="oe_dropdown_menu">
+                                        <li><ul class="oe_kanban_colorpicker" data-field="color"/></li>
+                                    </ul>
+                                </div>
+                                <div class="oe_kanban_content">
+                                    <div>
+                                        <b>
+                                              <field name="name"/>
+                                        </b>
+                                    </div>
+                                    <div>
+                                        <t><b>Date :</b></t><field name="date"/>
+                                    </div>
+                                    <div>
+                                        <t><b>Scheduled Date :</b></t><field name="min_date"/>
+                                    </div>
+                                    <div>
+                                        <t><b>Origin :</b></t><field name="origin"/>
+                                    </div>
+                                    <div>
+                                        <t><b>Location :</b></t><field name="location_dest_id"/>
+                                    </div>
+                                </div>
+                            
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+        </record>
+         <!--record id="stock.action_picking_tree_all" model="ir.actions.act_window">
+            <field name="name">Stock Operations</field>
+            <field name="res_model">stock.picking</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban,tree,form,calendar</field>
+            <field name="domain"></field>
+            <field name="context">{
+                    'contact_display': 'partner_address',
+            }
+            </field>
+            <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+        </record-->
+        
+        <record id="stock.action_picking_tree_ready" model="ir.actions.act_window">
+            <field name="name">Ready Transfers</field>
+            <field name="res_model">stock.picking</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar,kanban</field>
+            <field name="domain"></field>
+            <field name="context">{
+                    'search_default_picking_type_id': [active_id],
+                    'default_picking_type_id': active_id,
+                    'contact_display': 'partner_address',
+                    'search_default_available': 1,
+            }
+            </field>
+            <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+        </record>
+
+        <record id="stock.action_picking_tree" model="ir.actions.act_window">
+            <field name="name">Transfers</field>
+            <field name="res_model">stock.picking</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar,kanban</field>
+            <field name="domain"></field>
+            <field name="context">{
+                    'search_default_picking_type_id': [active_id],
+                    'default_picking_type_id': active_id,
+                    'contact_display': 'partner_address',
+            }
+            </field>
+            <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a stock operation. 
+              </p><p>
+                Most operations are prepared automatically by Odoo according
+                to your preconfigured logistics rules, but you can also record
+                manual stock movements.
+              </p>
+            </field>
+        </record>
+
+        <record id="stock.action_picking_tree_done" model="ir.actions.act_window">
+            <field name="name">Done Transfers</field>
+            <field name="res_model">stock.picking</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar,kanban</field>
+            <field name="domain"></field>
+            <field name="context">{
+                    'search_default_picking_type_id': [active_id],
+                    'default_picking_type_id': active_id,
+                    'contact_display': 'partner_address',
+                    'search_default_done': 1,
+            }
+            </field>
+            <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+        </record>
+        
+        
+         <!--record id="view_stock_picking_type_memco" model="ir.ui.view">
+            <field name="name">stock.picking.type.fo.memco1</field>
+            <field name="model">stock.picking.type</field>
+            <field name="inherit_id" ref="stock.stock_picking_type_kanban"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//kanban/templates/t[@t-name='kanban-box']/div/div[@class='oe_kanban_content']/div[@class='oe_items_list oe_kanban_ellipsis']" position='inside'>
+                        <div><a name="%(stock.action_picking_tree_ready)d" type="action">
+                                                <field name="count_shipping_process"/> Shipping Process
+                                            </a></div>
+                        <div><a name="%(stock.action_picking_tree_ready)d" type="action">
+                                                <field name="count_ready_shipping"/> Ready to Shipping
+                                            </a></div>
+                    </xpath>
+                
+                </data>
+            </field>
+        </record -->
+    </data>
+</openerp>

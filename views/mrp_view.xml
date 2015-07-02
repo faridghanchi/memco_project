@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="view_mrp_production_form_view_memco" model="ir.ui.view">
+            <field name="name">mrp.production.form.view.memco</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+            <field name="arch" type="xml">
+                <data>
+                    <!--xpath expr="/form/sheet/notebook/page[@string='Extra information']/group" position="inside">
+                        <field name="lead" string="Opportunities"/>
+                    </xpath-->
+                    <!--xpath expr="//form/sheet/notebook" position="inside">
+                        <page>
+                            <group string='Additional Product'>
+                                <field name="move_lines3"/>
+                            </group>
+                        </page>
+                    </xpath-->
+                    <xpath expr="/form/sheet/notebook/page[@string='Consumed Products']/group/group[@string='Consumed Products']/field[@name='move_lines2']/tree/field[@name='product_uom_qty']" position='after'>
+                        <button name="%(memco_project.move_consumed)d"
+                                                string="Reverse to Consume" type="action"
+                                                icon="terp-stock_symbol-selection" context="{'consume': True}"
+                                                states="done"/>
+                    </xpath>
+                    <xpath expr="/form/sheet/notebook/page[@string='Consumed Products']/group/group[@string='Products to Consume']/field[@name='move_lines']/tree/field[@name='product_uom_qty']" position='after'>
+                        <button name="%(memco_project.move_release)d"
+                                                string="Release / Delete" type="action"
+                                                icon="terp-stock_symbol-selection" context="{'consume': True}"
+                                                states="assigned,confirmed"/>
+                        <button name="%(memco_project.move_assign)d"
+                                                string="Assign to project" type="action"
+                                                icon="terp-stock_effects-object-colorize" context="{'consume': True}"
+                                                states="assigned,confirmed"/>
+                    </xpath>
+                    <field name="priority" position="after">
+                        <field name="lead" string="Opportunities"/>
+                        <field name="pr_generate" />
+                    </field>
+                    
+                <!--xpath expr="/form/sheet/div[@class='oe_title']" position='replace'>
+                     <div class="oe_title">
+                        <h1>Project No <field name="name" class="oe_inline" /></h1>
+                    </div>
+                </xpath-->
+                <field name="routing_id" position="attributes">
+                    <attribute name="string">Routing Process</attribute>
+                </field>
+                <field name="bom_id" position="attributes">
+                    <attribute name="string">Project Design</attribute>
+                </field>
+               
+                <xpath expr="//form/sheet/group" position="inside">
+                    <div class="oe_right oe_button_box" name="buttons"> 
+                        <!--button class="oe_inline oe_stat_button" name="%(act_mo_2_purchase_order_memco)d" type="action"
+                        icon="fa-shopping-cart" string="Create PR"/-->
+                    <button class="oe_inline oe_stat_button" name="create_pr" type="object"
+                        icon="fa-shopping-cart" string="Create PR" states="confirmed,ready,in_production" confirm="Are you sure you want to do this?"/>
+                    <button class="oe_stat_button" string="Products to Move" icon="fa-arrows-v" name="act_move_lines_mrp"
+                        type="object">
+                    </button>
+                    <button class="oe_inline oe_stat_button" string="Request Lesser Cutting" name="memco_project.action_lesser_cutting" type="action" icon="fa-arrows-v"/>
+                    </div>
+                </xpath>
+                
+                </data>
+            </field>
+        </record>
+        
+        
+         <record id="view_mrp_bom_filter_inherit" model="ir.ui.view">
+            <field name="name">mrp.bom.select.filter</field>
+            <field name="model">mrp.bom</field>
+            <field name="inherit_id" ref="mrp.view_mrp_bom_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="/search/group/filter[@string='Routing']" position="after">
+                    <filter string='State' icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'state'}"/>
+                </xpath>
+            </field>
+        </record>
+        
+        <record id="view_mrp_bom_form_view_memco" model="ir.ui.view">
+            <field name="name">mrp.bom.form.view.memco</field>
+            <field name="model">mrp.bom</field>
+            <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+            <field name="arch" type="xml">
+                <data>
+                <xpath expr="/form" position="replace">
+                    <form>
+                    <header>
+                        <!--button name="action_design_specification_gm" string="Send by Email" type="object" class="oe_highlight" groups="base.group_user"/-->
+                        <button name="action_button_design_done" states="new,re_design" string="Design Ready" type="object" groups="base.group_user"/>
+                        <field name="state" widget='statusbar'/>
+                    </header>
+                    <sheet>
+                        <group>
+                        <group>
+                            <field name="lead_id" on_change="onchange_lead_id(lead_id)" domain="[('stage_id.probability', '=', 20)]"/>
+                            <field name="product_tmpl_id" string= 'Project' on_change="onchange_product_tmpl_id(product_tmpl_id, product_qty, context)"/>
+                            <field name='code' required='1'/>
+                            <field name="product_id" invisible='1'/>
+                            <label for="product_qty" string="Quantity"/>
+                            <div>
+                                <field name="product_qty" class="oe_inline" on_change="onchange_product_tmpl_id(product_tmpl_id, product_qty, context)"/>
+                                <field name="product_uom" class="oe_inline" on_change="onchange_uom(product_tmpl_id, product_uom)" groups="product.group_uom"/>
+                            </div>
+                            
+                        </group>
+                        <group>
+                            <field name="name" groups="product.group_mrp_properties"/>
+                            <field name="customer" domain="[('customer','=',True)]"/>
+                            <field name="user"/>
+                            <field name="type" invisible="1"/>
+                            <p colspan="2" class="oe_grey" attrs="{'invisible': [('type','=','normal')]}">
+                                When processing a sales order for this product, the delivery order
+                                will contain the raw materials, instead of the finished product.
+                            </p>
+                            <field name="company_id" groups="base.group_multi_company" widget="selection"/>
+                            <label for="routing_id" class="oe_inline" string="Routing Process" groups="mrp.group_mrp_routings"/>
+                            <div groups="mrp.group_mrp_routings">
+                                <field name="routing_id" class="oe_inline"/>
+                            </div>
+                            <field name="sub_tech_spe" states='new,re_design'/>
+                            <field name="ready_workshop_drawing" invisible='1'/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Components">
+                            <field name="bom_line_ids" widget="one2many_list">
+                                <tree string="Components" editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id" on_change="onchange_product_id(product_id, product_qty)"/>
+                                    <field name="type"/>
+                                    <field name="product_qty" string="Required Qty"/>
+                                    <field name="price"/>
+                                    <field name="price_subtotal"/>
+                                    <field name="product_uom" on_change="onchange_uom(product_id, product_uom)" groups="product.group_uom"/>
+                                    <field name="product_rounding"/>
+                                    <field name="product_efficiency"/>
+                                    <field name="date_start"/>
+                                    <field name="date_stop"/>
+                                    <field name="attribute_value_ids" widget="many2many_tags" domain="[('product_ids.product_tmpl_id', '=', parent.product_tmpl_id)]"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Properties" groups="product.group_mrp_properties">
+                            <group>
+                                <group>
+                                    <field name="position"/>
+                                    <field name="sequence"/>
+                                    <field name="active"/>
+                                </group>
+                                <group>
+                                    <field name="date_start"/>
+                                    <field name="date_stop"/>
+                                    <field name="product_rounding"/>
+                                    <field name="product_efficiency"/>
+                                    <field name="standard_design" groups="base.group_user,memco_project.group_plant_manager"/>
+                                </group>
+                            </group>
+                            <separator string="Properties"/>
+                            <field name="property_ids" widget="many2many_tags"/>
+                        </page>
+                        <page string="Client Needs">
+                            <field name="client_needs" />
+                        </page>
+                    </notebook>
+                    <div class="oe_chatter">
+                         <field name="message_follower_ids" widget="mail_followers"/>
+                         <field name="message_ids" colspan="4" widget="mail_thread" nolabel="1"/>
+                    </div>
+                    </sheet></form>
+                </xpath>
+<!--                <xpath expr="/form/group/group/field[@name='name']" position='before'>-->
+<!--                    <field name="lead_id" on_change="onchange_lead_id(lead_id)"/>-->
+<!--                </xpath>-->
+<!--                <xpath expr="/form/group/group/field[@name='code']" position='before'>-->
+<!--                    <field name="customer" domain="[('customer','=',True)]"/>-->
+<!--                    <field name="user"/>-->
+<!--                </xpath>-->
+<!--                <xpath expr="/form/notebook/page[@string='Components']/field[@name='bom_line_ids']/tree/field[@name='product_qty']" position="replace">-->
+<!--                        <field name="product_qty" string="Required Qty" />-->
+<!--                </xpath>-->
+<!--                <xpath expr="/form/group/group/label[@for='routing_id']" position='replace'>-->
+<!--                     <label for="routing_id" string="Routing Process" class="oe_inline" groups="mrp.group_mrp_routings"/>-->
+<!--                </xpath>-->
+                
+<!--                <field name='product_tmpl_id' position='attributes'>-->
+<!--                    <attribute name='string'>Project</attribute>-->
+<!--                </field>-->
+<!--                <field name='code' position='replace'>-->
+<!--                </field>-->
+<!--                <field name='type' position='attributes'>-->
+<!--                    <attribute name="visible">False</attribute>-->
+<!--                </field>-->
+<!--                <field name='product_tmpl_id' position='after'>-->
+<!--                    <field name='code' string="Project Code"/>-->
+<!--                </field>-->
+                
+<!--                <xpath expr="/form/notebook/page[@string='Components']/field[@name='bom_line_ids']/tree/field[@name='product_qty']" position="after" >-->
+<!--                        <field name="price"/>-->
+<!--                        <field name="price_subtotal"/>-->
+<!--                </xpath>-->
+<!--                <xpath expr="/form/notebook" position="inside">-->
+<!--                    <page string="Client Needs">-->
+<!--                        <field name="client_needs" />-->
+<!--                    </page>-->
+<!--                </xpath>-->
+                </data>
+            </field>
+        </record>
+        
+        <record id="mrp_bom_tree_view1" model="ir.ui.view">
+            <field name="name">mrp.bom.tree</field>
+            <field name="model">mrp.bom</field>
+            <field name="arch" type="xml">
+                <tree string="Bill of Materials">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="customer"/>
+                    <field name="user"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="mrp.view_mrp_bom_filter" model="ir.ui.view">
+            <field name="name">mrp.bom.select</field>
+            <field name="model">mrp.bom</field>
+            <field name="arch" type="xml">
+                <search string="Search Bill Of Material">
+                    <field name="name" string="Bill Of Material" filter_domain="['|',('name','ilike',self),('code','ilike',self)]"/>
+                    <field name="bom_line_ids" string="Components"/>
+                    <field name="product_tmpl_id" string="Product"/>
+                    <field name="product_id" string="Variant"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Product" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'product_tmpl_id'}"/>
+                        <filter string='Default Unit of Measure' icon="terp-mrp" domain="[]" context="{'group_by' : 'product_uom'}"/>
+                        <filter string="Routing" icon="terp-stock_align_left_24" domain="[]" context="{'group_by':'routing_id'}"/>
+                        <filter string='Type' icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'type'}"/>
+                        <filter string=" Valid From Month" icon="terp-go-month" domain="[]" context="{'group_by':'date_start'}" help="Valid From Date by Month"/>
+                        <filter string='Customer' icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'customer'}"/>
+                        <filter string='Responsible' icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'user'}"/>
+                   </group>
+                </search>
+            </field>
+        </record>
+        <record id="mrp.mrp_bom_form_action" model="ir.actions.act_window">
+            <field name="name">Project Design</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mrp.bom</field>
+            <field name="domain">[]</field> <!-- force empty -->
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="mrp.view_mrp_bom_filter"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to createsub_tech_spe a bill of material. 
+              </p><p>
+                Bills of Materials allow you to define the list of required raw
+                materials used to make a finished product; through a manufacturing
+                order or a pack of products.
+              </p><p>
+                Odoo uses these BoMs to automatically propose manufacturing
+                orders according to procurement needs.
+              </p>
+            </field>
+        </record>
+        <menuitem
+            action="mrp.mrp_bom_form_action"
+            id="menu_mrp_bom_form_action"
+            parent="mrp.menu_mrp_manufacturing"
+            sequence="0"/>
+        
+<!--        <record id="res_sale_view_purchase_buttons" model="ir.ui.view">-->
+<!--            <field name="name">sale.order.view.purchase.buttons</field>-->
+<!--            <field name="model">sale.order</field>-->
+<!--            <field name="inherit_id" ref="sale.view_order_form" />-->
+<!--            <field name="priority" eval="20"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                -->
+<!--            </field>-->
+<!--        </record>-->
+<!--        -->
+
+         
+        
+
+    </data>
+</openerp>

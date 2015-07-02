@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="view_product_inherit_memco" model="ir.ui.view">
+            <field name="name">product.template.form.memco</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="/form/sheet/notebook/page[@string='Accounting']/group/label[@for='categ_id']" position='replace'>
+                    </xpath>
+                    <field name="categ_id" position="replace">
+                    </field>
+                    <xpath expr="/form/sheet/notebook/page[@string='Information']/group/group/field[@name='type']" position='after'>
+                        <field name="categ_id" />
+                        <!--field name='standard_no' /-->
+                    </xpath>
+                    
+                    <field name='active' position="after">
+                        <field name="alternative_product" widget='many2many_tags'/>
+                   </field>
+                   <!--xpath expr="/form/sheet/notebook/page[@string='Procurements']/group/label[@for='categ_id']" position='replace'>
+                    </xpath-->
+                    <field name="standard_price" position="after">
+                        <field name="local_carrier_cost" />
+                        <field name="international_c_cost" />
+                        <field name="unit_lc_cost" />
+                        <field name="total_cost"/>
+                    </field>
+                </data>
+            </field>
+        </record>
+
+        <!--record id="product.product_template_search_view" model="ir.ui.view">
+            <field name="name">product.template.search</field>
+            <field name="model">product.template</field>
+            <field name="arch" type="xml">
+                <search string="Product">
+                    <field name="name" string="Product" filter_domain="['|',('default_code','ilike',self),('name','ilike',self)]"/>
+                    <filter string="Services" icon="terp-accessories-archiver" domain="[('type','=','service')]"/>
+                    <filter string="Consumable" name="consumable" icon="terp-accessories-archiver" domain="[('type','=','consu')]" help="Consumable products"/>
+                    <separator/>
+                    <filter string="Can be Sold" name="filter_to_sell" icon="terp-accessories-archiver-minus" domain="[('sale_ok','=',1)]"/>
+                    <field name="categ_id" filter_domain="[('categ_id', 'child_of', self)]"/>
+                    <field string="Product Variant" name="product_variant_ids" filter_domain="['|', ('product_variant_ids.name','ilike',self), ('product_variant_ids.attribute_value_ids.name','ilike',self)]"/>
+                    <field name="company_id"/>
+                    <field name="pricelist_id" widget="selection" context="{'pricelist': self}" filter_domain="[]" groups="product.group_sale_pricelist"/> 
+                    <group  expand='0' string='Group by...'>
+                       <filter string='Category' domain="[]" context="{'group_by' : 'pro_cat'}"/>
+                       <filter string='Default Unit of Measure' icon="terp-mrp" domain="[]" context="{'group_by' : 'uom_id'}"/>
+                       <filter string='Type' icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'type'}"/>
+                       
+                    </group>
+                </search>
+            </field>
+        </record-->
+
+        <!--record id="product_new_category_tree_view" model="ir.ui.view">
+            <field name="name">product.new.tree</field>
+            <field name="model">product.new.category</field>
+            <field name="arch" type="xml">
+                <tree string="Category">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record-->
+
+        <!--record id="product_new_category_action_form" model="ir.actions.act_window">
+            <field name="name">Category</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.new.category</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="product_new_category_tree_view"/>
+        </record>
+        <menuitem
+            action="product_new_category_action_form" id="purchase.menu_product_by_category_purchase_form"
+            parent="purchase.menu_product_in_config_purchase" sequence="2" /-->
+
+    </data>
+</openerp>

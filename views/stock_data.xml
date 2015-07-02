@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- After installation of the module, open the related menu -->
+        <record id="stock_location_lesser" model="stock.location">
+            <field name="name">Lesser Cutting</field>
+            <field name="usage">internal</field>
+            <field name="location_id" ref="stock.stock_location_locations"/>
+        </record>
+        
+        <record id="warehouse1" model="stock.warehouse">
+            <field name="name">LESSER CUTTING</field>
+            <field name="code">Lesser</field>
+        </record>
+        
+    </data>
+</openerp>

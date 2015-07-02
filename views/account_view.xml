@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="view_account_invoice_form_memco" model="ir.ui.view">
+            <field name="name">account.invoice.supplier.form.memco</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="/form/sheet/notebook/page[@string='Invoice']/field[@name='invoice_line']/tree/field[@name='invoice_line_tax_id']" position='attributes'>
+                        <attribute name='invisible'>1</attribute>
+                    </xpath>
+                    <xpath expr="/form/sheet/notebook/page[@string='Invoice']/div/field[@name='tax_line']" position='attributes'>
+                        <attribute name='invisible'>1</attribute>
+                    </xpath>
+                    <xpath expr="/form/sheet/notebook/page[@string='Invoice']/group[@class='oe_subtotal_footer oe_right']" position='replace'>
+                         <group class="oe_subtotal_footer oe_right">
+                                <field name="amount_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <div>
+                                    <label for="amount_tax" invisible="1"/>
+                                    <button name="button_reset_taxes" states="draft,proforma2" string="(update)" class="oe_link oe_edit_only" type="object" help="Recompute taxes and total" />
+                                </div>
+                                <field name="amount_tax" nolabel="1" widget="monetary" options="{'currency_field': 'currency_id'}" invisible='1'/>
+                                <field name="discount_amt" />
+                                <field name="amount_total" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+
+                                <field name="residual" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="reconciled" />
+                            </group>
+                            <group class="oe_subtotal_footer oe_left">
+                                <field name="disc_method" />
+                                <field name="disc_amt" />
+                            </group>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+        <record id="view_account_invoice_customer_form_memco" model="ir.ui.view">
+            <field name="name">account.invoice.customer.form.memco</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="/form/sheet/notebook/page[@string='Invoice Lines']/field[@name='invoice_line']/tree/field[@name='invoice_line_tax_id']" position='attributes'>
+                        <attribute name='invisible'>1</attribute>
+                    </xpath>
+<!--                    <xpath expr="/form/sheet/notebook/page[@string='Invoice Lines']/div/field[@name='tax_line']" position='attributes'>-->
+<!--                        <attribute name='invisible'>1</attribute>-->
+<!--                    </xpath>-->
+                    <xpath expr="/form/sheet/notebook/page[@string='Invoice Lines']/group[@class='oe_subtotal_footer oe_right']" position='replace'>
+                         <group class="oe_subtotal_footer oe_right">
+                                <field name="amount_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <div>
+                                    <label for="amount_tax" invisible="1"/>
+                                    <button name="button_reset_taxes" states="draft,proforma2" string="(update)" class="oe_link oe_edit_only" type="object" help="Recompute taxes and total"/>
+                                </div>
+                                <field name="amount_tax" nolabel="1" widget="monetary" options="{'currency_field': 'currency_id'}" invisible='1'/>
+                                <field name="amount_total" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="residual" groups="account.group_account_user" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="reconciled" />
+                            </group>
+                    </xpath>
+                    <xpath expr="//field[@name='move_id']" position="after">
+                        <field name="tag" />
+                        <field name="sale_id" />
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+        <record id="memco_inherit_account_searchview" model="ir.ui.view">
+            <field name="name">account.inherit.search.memco</field>
+            <field name="model">account.invoice</field>
+            <field name="type">search</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="arch" type="xml">
+                <field name="number" position="after">
+                    <field name="tag" />
+                </field>
+                <xpath expr="//search/group[@string='Group By']" position="inside">
+                    <filter string="TAG" domain="[]" context="{'group_by':'tag'}"/>
+                </xpath>
+            </field>
+    </record>
+
+    </data>
+</openerp>

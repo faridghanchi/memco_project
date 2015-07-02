@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="crm_case_form_view_oppor123">
+            <field name="name">CRM - crm_make_sale - wizard Inherit</field>
+            <field name="model">crm.make.sale</field>
+            <field name="inherit_id" ref="sale_crm.view_crm_make_sale"/>
+            <field name="arch" type="xml">
+                <data>
+                     <field name="close" position="after">
+                        <field name="line_id" />
+                        <field name="memco_project_id" />
+                        <field name="memco_lead_id" />
+                     </field>
+                </data>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="crm_case_form_view_oppor123">
+            <field name="name">CRM - Opportunities - Quote Inherit</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="sale_crm.crm_case_form_view_oppor"/>
+            <field name="arch" type="xml">
+                <data>
+                     <xpath expr="/form/header/button[@string='Convert to Quotation']" position="replace">
+                        <button attrs="{'invisible': [('probability', 'in', [30,50,60])],'invisible': [('project_design', '=',True)]}" name="case_project_design" string="Project Design" type="object" class="oe_highlight" />
+                        <button attrs="{'invisible': [('probability', '=', 100)]}" string="Create Quotation" name="%(sale_crm.action_crm_make_sale)d" type="action" class="oe_highlight"/>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+        
+        <record id="view_crm_lead_form_memco" model="ir.ui.view">
+            <field name="name">crm.lead.form.memco</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_case_form_view_oppor"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="/form/sheet/notebook/page[@string='Internal Notes']" position='after'>
+                        <page string="Project design">
+                            <field name='bom_ids' />
+                            <field name="project_design" invisible="1"/>
+                        </page>
+                    </xpath>
+                    <xpath expr="//field[@name='stage_id']" position="before">
+                        
+                    </xpath>
+<!--                    <xpath expr="/form/header" position="replace">-->
+<!--                        <header>-->
+<!--                            <button name="case_mark_won" string="Mark Won" type="object" class="oe_highlight"/>-->
+<!--                            <button name="case_mark_lost" string="Mark Lost" type="object" class="oe_highlight"/>-->
+<!--                            <button name="case_project_design" string="Project Design" type="object" class="oe_highlight"/>-->
+<!--                            <field name="stage_id" widget="statusbar" clickable="True"-->
+<!--                                options="{'fold_field': 'fold'}"-->
+<!--                                domain="['&amp;', ('section_ids', '=', section_id), '|', ('type', '=', type), ('type', '=', 'both')]" groups='base.group_sale_manager,base.group_sale_salesman_all_leads' statusbar_visible=''/>-->
+<!--                        </header>-->
+<!--                    </xpath>-->
+<!--                    <field name="email_from" position="before">-->
+<!--                        <field name="order_date" />-->
+<!--                    </field>-->
+                </data>
+            </field>
+        </record>
+        <record id="view_crm_lead_form_memco1" model="ir.ui.view">
+            <field name="name">crm.lead.form.memco1</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_case_form_view_leads"/>
+            <field name="arch" type="xml">
+                <data>
+                    <field name="email_from" position="before">
+                        <field name="order_date" />
+                    </field>
+                    <field name='partner_id' position='replace'>
+                         <field name="partner_id" string="Customer" on_change="on_change_partner_id(partner_id)" options="{&quot;create_name_field&quot;: &quot;name&quot;}" context="{'default_name': contact_name, 'default_street': street, 'default_city': city, 'default_state_id': state_id, 'default_zip': zip, 'default_country_id': country_id, 'default_function': function, 'default_phone': phone, 'default_mobile': mobile, 'default_fax': fax, 'default_email': email_from, 'default_user_id': user_id, 'default_section_id': section_id}" domain="[('customer','=',True)]"/>
+                    </field>
+                </data>
+            </field>
+        </record>
+        
+
+        
+        
+        
+
+        
+    </data>
+</openerp>

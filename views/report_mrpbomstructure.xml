@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+<template id="mrp.report_mrpbomstructure">
+    <t t-call="report.html_container">
+        <t t-call="report.internal_layout">
+            <div class="page">
+                <h2>Technical Specification Structure</h2>
+                <t t-foreach="docs" t-as="o">
+                <div class="row mt32 mb32" id="informations">
+                    <div t-if="o.code" class="col-xs-3">
+                        <strong>Project code:</strong>
+                        <p t-field="o.code"/>
+                    </div>
+                    <div t-if="o.customer" class="col-xs-3">
+                        <strong>Customer Name:</strong>
+                        <p t-field="o.customer.name"/>
+                    </div>
+                    <div t-if="o.user" class="col-xs-3">
+                        <strong>Design By:</strong>
+                        <p t-field="o.user.name"/>
+                    </div>
+                </div>
+                </t>
+                <table class="table table-condensed">
+                    <thead>
+                        <tr>
+                            <th>Project Name</th>
+                            <th>Quantity</th>
+                            <th>Project Ref</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="docs" t-as="o">
+                            <tr style="font-weight: bold;">
+                                <td>
+                                    <span t-field="o.product_id.default_code"/>
+                                    <span t-field="o.name"/>
+                                </td>
+                                <td>
+                                    <span t-field="o.product_qty"/>
+                                    <span groups="product.group_uom" t-field="o.product_uom.name"/>
+                                </td>
+                                <td>
+                                    <span t-field="o.code"/>
+                                </td>
+                            </tr></t>
+                            </tbody>
+                </table>
+<!--                        <table class="table table-condensed">-->
+<!--                    <thead>-->
+<!--                        <tr>-->
+<!--                            <th>Item Name</th>-->
+<!--                            <th>Quantity</th>-->
+<!--                            <th>Price</th>-->
+<!--                            <th>Total</th>-->
+<!--                        </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                            <t t-foreach="docs" t-as="o">-->
+<!--                            <tr t-foreach="get_children(o.bom_line_ids)" t-as="l">-->
+<!--                                <td style="padding-left: 20px;">-->
+<!--                                    <span style="color: white;" t-esc="'... '*(l['level'])"/>[-->
+<!--                                    <span t-esc="l['pcode']"/>]-->
+<!--                                    <span t-esc="l['pname']"/>-->
+<!--                                </td>-->
+<!--                                <td>-->
+<!--                                    <span t-esc="formatLang(l['pqty'])"/>-->
+<!--                                    <span t-esc="l['uname']" groups="product.group_uom"/>-->
+<!--                                </td>-->
+<!--                                <td>-->
+<!--                                    <span t-esc="l['price']"/>-->
+<!--                                </td>-->
+<!--                                <td>-->
+<!--                                    <span t-esc="l['price_subtotal']"/>-->
+<!--                                </td>-->
+<!--                            </tr>-->
+<!--                        </t>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+                <table class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <td class="text-center"><strong>Item name</strong></td>
+                                <td class="text-center"><strong>Qty</strong></td>
+                                <td class="text-center"><strong>Unit of Measure</strong></td>
+                                <td class="text-center"><strong>Unit Price</strong></td>
+                                <td class="text-center"><strong>Total</strong></td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <t t-foreach="docs" t-as="o">
+                            <tr t-foreach="o.bom_line_ids" t-as="line2">
+                                <td class="text-center"><span t-field="line2.product_id.name"/></td>
+                                <td class="text-center"><span t-field="line2.product_qty"/></td>
+                                <td class="text-center"><span t-field="line2.product_uom.name"/></td>
+                                <td class="text-center"><span t-field="line2.price"/></td>
+                                <td class="text-center"><span t-field="line2.price_subtotal"/></td>
+                            </tr></t></tbody>
+                        </table>
+            </div>
+        </t>
+    </t>
+</template>
+</data>
+</openerp>

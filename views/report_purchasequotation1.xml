@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+<template id="purchase.report_purchasequotation_document">
+    <t t-call="report.external_layout">
+        <div class="page">
+            <h1>Purchase Request </h1>
+            <div class="oe_structure"/>
+
+            <div class="row mt32 mb32">
+                <div class="col-xs-6">
+                        <div>
+                            JOB NO:<span t-field="o.name"/>
+                        </div>
+                        <div>
+                            PROJECT:<span t-field="o.pr_name"/>
+                        </div>
+                        <div>
+                            PRIORITY:<span t-field="o.pr_priority"/>
+                        </div>
+                </div>
+                <div class="col-xs-5 col-xs-offset-1">
+                   Date:<span t-field="o.date_order"/>
+                </div>
+                <div class="col-xs-5 col-xs-offset-1">
+                   Supplier:<span t-field="o.partner_id.name"/>
+                </div>
+            </div>
+
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th>DESCRIPTION</th>
+                        <th>PART</th>
+                        <th class="text-center">QTY.</th>
+                        <th class="text-center">PRICE</th>
+                        <th class="text-center">TOTAL PRICE</th>
+                        <th class="text-right">STOCK</th>
+                        <th class="text-right">RESRVD</th>
+                        <th class="text-right">REQRD</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="o.order_line" t-as="order_line">
+                        <td>
+                            <span t-field="order_line.name"/>
+                        </td>
+                        <td class="text-center">
+                            <span/>
+                        </td>
+                        <td class="text-right">
+                            <span t-field="order_line.product_qty"/>
+                            <span t-field="order_line.product_uom" groups="product.group_uom"/>
+                        </td>
+                        <td class="text-center">
+                            <span t-field="order_line.price_unit"/>
+                        </td>
+                         <td class="text-center">
+                            <span t-field="order_line.price_subtotal"/>
+                        </td>
+                        <td class="text-center">
+                            <span/>
+                        </td>
+                        <td class="text-center">
+                            <span/>
+                        </td>
+                        <td class="text-center">
+                            <span/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="row">
+                <div class="col-xs-4 pull-right">
+                    <table class="table table-condensed">
+                        <tr class="border-black">
+                            <td>Total</td>
+                            <td class="text-right">
+                                <span t-field="o.amount_total"
+                                    t-field-options='{"widget": "monetary", "display_currency": "o.pricelist_id.currency_id"}'/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+<!--            <p t-field="o.notes"/>-->
+<!--            <span>Regards,</span>-->
+            <div class="row mt32 mb32">
+                <div class="col-xs-6">
+                        <div>
+                            Prepared By:<span/>
+                        </div>
+                        <div>
+                            Signature:<span t-field="user.signature"/>
+                        </div>
+                        <div>
+                            Date:<span/>
+                        </div>
+                        <div>
+                            Time:<span />
+                        </div>
+                </div>
+                <div class="col-xs-5 col-xs-offset-1">
+                   Checked By:<span t-field="o.partner_id.name"/>
+                </div>
+                <div class="col-xs-5 col-xs-offset-1">
+                   Signature:<span t-field="user.signature"/>
+                </div>
+                <div class="col-xs-5 col-xs-offset-1">
+                   Date:<span t-field="o.partner_id.name"/>
+                </div>
+                <div class="col-xs-5 col-xs-offset-1">
+                   Time:<span t-field="o.partner_id.name"/>
+                </div>
+            </div>
+            <div class="row mt32 mb32">
+                <div class="col-xs-6">
+                        <div>
+                            Purchase Manager:<span/>
+                        </div>
+                        <div>
+                            Date:<span />
+                        </div>
+                        <div>
+                            <span />
+                        </div>
+                </div>
+                <div class="col-xs-5 col-xs-offset-1">
+                   Approved By:<span/>
+                </div>
+                <div class="col-xs-5 col-xs-offset-1">
+                   Genaral Manager:<span />
+                </div>
+                
+            </div>
+            <div class="oe_structure"/>
+        </div>
+    </t>
+</template>
+
+<template id="report_purchasequotation">
+    <t t-call="report.html_container">
+        <t t-foreach="doc_ids" t-as="doc_id">
+            <t t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang', 'purchase.report_purchasequotation_document')"/>
+        </t>
+    </t>
+</template>
+</data>
+</openerp>
+    

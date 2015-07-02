@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    
+    
+     <record id="purchase_order_line_form_inherits" model="ir.ui.view">
+            <field name="name">purchase.order.line.form.inherits</field>
+            <field name="model">purchase.order.line</field>
+            <field name="inherit_id" ref="purchase.purchase_order_line_form"/>
+            <field name="arch" type="xml">
+                <field name="product_qty" position='after'>
+                    <field name='avail_qty' invisible='1'/>
+                    <field name='incoming_qty' invisible='1'/>
+                    <field name='forecast_qty' invisible='1'/>
+                    <field name='source_ref'/>
+                </field>
+            </field>
+    </record>
+    <record id="purchase_order_form_inherits" model="ir.ui.view">
+            <field name="name">purchase.order.form.inherits</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form/header/button[@string='Confirm Order']" position="attributes">
+                    <attribute name="string">Confirm PR</attribute> 
+                </xpath>
+                <xpath expr="//form/header/button[@string='Print RFQ']" position="attributes">
+                    <attribute name="string">Print PR</attribute> 
+                </xpath>
+                <xpath expr="//form/header/button[@string='Send RFQ by Email']" position="attributes">
+                    <attribute name="string">Send PR By Email</attribute> 
+                </xpath>
+                <xpath expr="/form/sheet/div/h1/label[@string='Request for Quotation ']" position="attributes">
+                    <attribute name="string">Purchase Request</attribute> 
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page[@string='Products']/field[@name='order_line']/tree/field[@name='taxes_id']" position='attributes'>
+                    <attribute name='invisible'>1</attribute>
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page[@string='Products']/field[@name='order_line']/tree/field[@name='price_subtotal']" position='before'>
+                    <field name='avail_qty'/>
+                    <field name='incoming_qty'/>
+                    <field name='forecast_qty' string="Available qty"/>
+                    <field name='source_ref'/>
+                    
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page[@string='Products']/group/field[@name='amount_tax']" position='attributes'>
+                    <attribute name='invisible'>1</attribute>
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page[@string='Products']" position='after'>
+                    <page string="Invoices">
+                        <group>
+                            <field name="invoice_ids" nolabel="1"/>
+                        </group>
+                    </page>
+                </xpath>
+                 <xpath expr="/form/sheet/notebook/page[@string='Products']/group/field[@name='amount_untaxed']" position='attributes'>
+                    <attribute name='string'>Total price</attribute>
+                </xpath>
+                <field name='picking_type_id' position='before'>
+                    <field name='pr_name' string="Project design"/>
+                </field>
+                <field name='partner_ref' position='after'>
+                    <field name='pr_priority' string='Priority'/>
+                    <field name='project'/>
+                    <!--field name='approved_gm' /-->
+                </field> 
+                <field name="minimum_planned_date" position='before'>
+                    <field name="expected_days" group='purchase.group_purchase_manager'/>
+                </field>
+            </field>
+            
+    </record>
+
+      <record id="purchase_rfq" model="ir.actions.act_window">
+            <field name="name">(PR)Purchase Request</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.order</field>
+            <field name="context">{}</field>
+            <field name="domain">[('state','in',('draft','sent','bid','cancel', 'confirmed'))]</field>
+            <field name="view_mode">tree,form,graph,calendar</field>
+            <field name="search_view_id" ref="purchase.view_purchase_order_filter"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a request for quotation.
+              </p><p>
+                The quotation contains the history of the discussion/negotiation
+                you had with your supplier. Once confirmed, a request for
+                quotation is converted into a purchase order.
+              </p><p>
+                Most propositions of purchase orders are created automatically
+                by Odoo based on inventory needs.
+              </p>
+            </field>
+        </record>
+        <menuitem action="purchase_rfq" id="purchase.menu_purchase_rfq"
+            parent="purchase.menu_procurement_management"
+            sequence="0"/>
+            
+<!--        <record id="act_so_2_purchase_order_memco" model="ir.actions.act_window">-->
+<!--            <field name="name">RFQs and Purchases</field>-->
+<!--            <field name="res_model">purchase.order</field>-->
+<!--            <field name="view_type">form</field>-->
+<!--            <field name="view_mode">tree,form,graph</field>-->
+<!--            <field name="context">{'default_pr_name': 'SO,'+str(context.get('active_id', False))}</field>-->
+<!--            <field name="groups_id" eval="[(4, ref('purchase.group_purchase_user'))]"/>-->
+<!--            <field name="help" type="html">-->
+<!--                <p class="oe_view_nocontent_create">-->
+<!--                    This supplier has no purchase order. Click to create a new RfQ.-->
+<!--                </p><p>-->
+<!--                    The request for quotation is the first step of the purchases flow. Once-->
+<!--                    converted into a purchase order, you will be able to control the receipt-->
+<!--                    of the products and the supplier invoice.-->
+<!--                </p>-->
+<!--            </field>-->
+<!--        </record>-->
+<!--        -->
+         <record id="act_mo_2_purchase_order_memco" model="ir.actions.act_window">
+            <field name="name">RFQs and Purchases</field>
+            <field name="res_model">purchase.order</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,graph</field>
+            <field name="context">{'default_pr_name': 'MO,'+str(context.get('active_id', False))}</field>
+            <field name="groups_id" eval="[(4, ref('purchase.group_purchase_user'))]"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    This supplier has no purchase order. Click to create a new RfQ.
+                </p><p>
+                    The request for quotation is the first step of the purchases flow. Once
+                    converted into a purchase order, you will be able to control the receipt
+                    of the products and the supplier invoice.
+                </p>
+            </field>
+        </record>
+        
+        
+        <record id="purchase.view_purchase_order_filter" model="ir.ui.view">
+            <field name="name">purchase.order.list.select</field>
+            <field name="model">purchase.order</field>
+            <field name="arch" type="xml">
+                <search string="Search Purchase Order">
+                    <field name="name" string="Reference"/>
+                    <field name="partner_id" operator="child_of"/>
+                    <field name="product_id"/>
+                    <field name="create_uid"/>
+                    <field name="pr_name"/>
+                    <filter name="draft" string="Quotations" domain="[('state','in',('draft','sent'))]"/>
+                    <filter name="approved" string="Purchase Orders" domain="[('state','not in',('draft','cancel'))]"/>
+                    <filter name="exception" string="Exception" domain="[('state','in',('except_invoice','except_picking'))]"/>
+                    <separator/>
+                    <filter name="not_invoiced" string="Not Invoiced" domain="[('invoice_ids','=', False)]"/>
+                    <separator/>
+                    <filter string="New Mail" name="message_unread" domain="[('message_unread','=',True)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Supplier" icon="terp-partner" domain="[]" context="{'group_by':'partner_id'}"/>
+                        <filter string="Order Month" icon="terp-go-month" domain="[]" context="{'group_by':'date_order'}"/>
+                        <filter string="Expected Month" icon="terp-go-month" domain="[]" context="{'group_by':'minimum_planned_date'}"/>
+                        <filter string="Project" icon="terp-go-month" domain="[]" context="{'group_by':'pr_name'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        
+        
+        <record id="purchase_line_form_action250" model="ir.actions.act_window">
+            <field name="name">Purchase Order Lines</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.order.line</field>
+            <field name="domain">[]</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="purchase.purchase_order_line_search"/>
+            <field name="help" type="html">
+              <p>
+                Here you can track all the lines of purchase orders where the
+                invoicing is "Based on Purchase Order Lines", and for which you
+                have not received a supplier invoice yet. You can generate a
+                draft supplier invoice based on the lines from this list.
+              </p>
+            </field>
+        </record>
+
+        <record id="purchase_line_form_action_tree250" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="purchase.purchase_order_line_tree"/>
+            <field name="act_window_id" ref="purchase_line_form_action250"/>
+        </record>
+        <record id="purchase_line_form_action_form250" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="purchase.purchase_order_line_form2"/>
+            <field name="act_window_id" ref="purchase_line_form_action250"/>
+        </record>
+        <menuitem
+            action="purchase_line_form_action250"
+            id="menu_purchase_line_order_draft123"
+            parent="purchase.menu_procurement_management_invoice"
+            sequence="72"/>
+        
+    </data>
+</openerp>

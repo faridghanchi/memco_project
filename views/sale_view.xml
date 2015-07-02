@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+<!--        <record id="view_stock_picking_inherit_erpcon1" model="ir.ui.view">-->
+<!--            <field name="name">stock.picking.form.sale.erpcon1</field>-->
+<!--            <field name="model">stock.picking</field>-->
+<!--            <field name="inherit_id" ref="stock.view_picking_form"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <data>-->
+<!--                    <field name='origin' position='after'>-->
+<!--                        <field name='sale_id' />-->
+<!--                    </field>-->
+<!--                </data>-->
+<!--            </field>-->
+<!--        </record>-->
+<!--Re-Design, Job Order Sent,Create Job card -->
+        <record id="view_sale_order_form_memco" model="ir.ui.view">
+            <field name="name">sale.order.form.sale.memco</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr='/form/header' position="replace">
+                        <header>
+                        <button name="action_button_re_design" states="new,sent" string="Re-Design" type="object" groups="base.group_user"/>
+                        <!--button name="action_button_joborder_sent" states="sent" string="Job Order Sent" type="object" groups="base.group_user"/>
+                        <button name="action_button_create_jobcard" states="sent" string="Create Job Order" type="object" class="oe_highlight" groups="base.group_user"/-->
+                        <button name="invoice_recreate" states="invoice_except" string="Recreate Invoice" groups="base.group_user"/>
+                        <button name="invoice_corrected" states="invoice_except" string="Ignore Exception" groups="base.group_user"/>
+                        <button name="action_quotation_send" string="Send by Email" type="object" states="draft" class="oe_highlight" groups="base.group_user"/>
+                        <button name="action_quotation_send" string="Send by Email" type="object" states="progress,manual"  groups="base.group_user"/>
+                        <button name="print_quotation" string="Print" type="object" states="draft" class="oe_highlight" groups="base.group_user"/>
+                        <button name="print_quotation" string="Print" type="object" states="sent,progress,manual" groups="base.group_user"/>
+                        <button name="action_button_confirm" states="draft" string="Confirm Sale" type="object" groups="base.group_user"/>
+                        <button name="action_button_confirm" states="sent" string="Confirm Sale" class="oe_highlight" type="object" groups="base.group_user"/>
+                        <button name="action_view_invoice" string="View Invoice" type="object" class="oe_highlight"
+                            attrs="{'invisible': [('invoice_exists', '=', False)]}" groups="base.group_user"/>
+                        <button name="%(sale.action_view_sale_advance_payment_inv)d" string="Create Invoice"
+                            type="action" states="manual" class="oe_highlight" groups="base.group_user"/>
+                        <button name="copy_quotation" states="cancel" string="New Copy of Quotation" type="object"/>
+                        <button name="cancel" states="draft,sent" string="Cancel Quotation" groups="base.group_user"/>
+                        <button name="action_cancel" states="manual,progress" string="Cancel Order" type="object" groups="base.group_user"/>
+                        <button name="invoice_cancel" states="invoice_except" string="Cancel Order" groups="base.group_user"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,sent,progress,done" statusbar_colors='{"invoice_except":"red","waiting_date":"blue"}'/>
+                        </header>
+                    </xpath>
+                    <xpath expr="/form/sheet/group" position="inside" >
+                        <group string="Standard">
+                            <field name="standard_project_id" domain="[('standard_design','=',True)]"/>
+                            <button name="button_get_bom_project" states="draft,sent" string="(update)" type="object" class="oe_edit_only oe_link"/>
+                        </group>
+                    </xpath>
+                    <field name="project_id" position="after">
+                        <field name="account"/>
+                        <field name="journal_id" />
+                    </field>
+                    <field name="date_order" position="after">
+                        <field name="estimated_date"/>
+                        <field name="memco_project_id" />
+                        <!--field name="send_to_all" attrs="{'invisible': [('state','!=','sent')]}"/-->
+                        <field name="users" widget='many2many_tags'/>
+                        <field name="tag" />
+                    </field>
+<!--                    <xpath expr="//form/header/button[@name='print_quotation']" position='after'>-->
+<!--                        <button name="mail_send_to_pm" icon="terp-mail-" states='draft' type="object" -->
+<!--                        class="oe_highlight" string="Send email to Purchase Manager" />-->
+<!--                    </xpath>-->
+                    <xpath expr="/form/sheet/notebook/page[@string='Other Information']/group/group/field[@name='origin']" position='after'>
+                        <field name='memco_lead_id' string="Lead" required='1'/>
+                    </xpath>
+
+                    <xpath expr="/form/sheet/notebook/page[@string='Order Lines']/field[@name='order_line']/form/group/group/field[@name='tax_id']" position='attributes'>
+                            <attribute name='invisible'>1</attribute>
+                        </xpath>
+
+                    <xpath expr="/form/sheet/notebook/page[@string='Order Lines']/field[@name='order_line']/tree/field[@name='tax_id']" position='attributes'>
+                        <attribute name='invisible'>1</attribute>
+                    </xpath>
+                <xpath expr="/form/sheet/notebook/page[@string='Order Lines']/group/field[@name='amount_tax']" position='attributes'>
+                    <attribute name='invisible'>1</attribute>
+                </xpath>
+                 <xpath expr="/form/sheet/notebook/page[@string='Order Lines']/group/field[@name='amount_untaxed']" position='attributes'>
+                    <attribute name='string'>Total price</attribute>
+                </xpath>
+                </data>
+            </field>
+        </record>
+        
+        <record id="memco_inherit_sale_searchview1" model="ir.ui.view">
+            <field name="name">account.inherit.search.memco1</field>
+            <field name="model">sale.order</field>
+            <field name="type">search</field>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="tag" />
+                </field>
+                <xpath expr="//search/group[@string='Group By']" position="inside">
+                    <filter string="TAG" domain="[]" context="{'group_by':'tag'}"/>
+                </xpath>
+            </field>
+        </record>
+        
+        
+<!--        <record id="res_sale_view_purchase_buttons" model="ir.ui.view">-->
+<!--            <field name="name">sale.order.view.purchase.buttons</field>-->
+<!--            <field name="model">sale.order</field>-->
+<!--            <field name="inherit_id" ref="sale.view_order_form" />-->
+<!--            <field name="priority" eval="20"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="//form/sheet/group" position="inside">-->
+<!--                    <div class="oe_right oe_button_box" name="buttons"> -->
+<!--                        <button class="oe_inline oe_stat_button" name="%(act_so_2_purchase_order_memco)d" type="action"-->
+<!--                        icon="fa-shopping-cart" string="Create PR">-->
+<!--                    </button>-->
+<!--                    </div>-->
+<!--                </xpath>-->
+<!--            </field>-->
+<!--        </record>-->
+        
+<!--        <record id="view_move_tree_erpcron" model="ir.ui.view">-->
+<!--            <field name="name">stock.move.tree.sale.erpcon</field>-->
+<!--            <field name="model">stock.move</field>-->
+<!--            <field name="inherit_id" ref="stock.view_move_picking_tree"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <data>-->
+<!--                    <field name='product_id' position='after'>-->
+<!--                        <field name='ordered_qty' />-->
+<!--                    </field>-->
+<!--                    <field name='product_uom_qty' position='after'>-->
+<!--                        <field name='remain_qty' />-->
+<!--                    </field>-->
+<!--                </data>-->
+<!--            </field>-->
+<!--        </record>-->
+        
+        
+        <record id="sale.act_sent" model="workflow.activity">
+            <field name="wkf_id" ref="sale.wkf_sale"/>
+            <field name="name">sent</field>
+            <field name="kind">function</field>
+            <field name="action">action_sent()</field>
+        </record>
+
+    </data>
+</openerp>

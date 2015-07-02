@@ -1,0 +1,153 @@
+<?xml version="1.0" ?>
+<openerp>
+	<data>
+        <!--Period lock form view-->
+        <record id='form_view_memco_lcform' model='ir.ui.view'>
+            <field name='name'>form.view.memco.lcform</field>
+            <field name='model'>memco.lcform</field>
+            <field name='type'>form</field>
+            <field name='arch' type='xml'> 
+                <form string='lcform Certificate' version='7.0'>
+                    <header>
+                        <button name="button_approval" states="new" string="Confirmed" type="object" groups="purchase.group_purchase_manager"/>
+                        <!--button name="button_received_certifcate" states="open" string="Received C.C" type="object" groups="base.group_user" help="If Received lcform Certificate then press"/-->
+                        <button name="button_closed" type='object' string="Closed" state="notclose"
+                            attrs="{'invisible': [('match_cost', '=', False)]}" groups="purchase.group_purchase_manager"/>
+                        <field name="state" widget='statusbar' />
+                    </header>
+                    <sheet>
+                        <group>
+                            <!--group>
+                            <button name="button_closed" states="open" string="Closed" groups="base.group_user" attrs="{'invisible': [('match_not_cost', '=', False)]}" icon="fa-strikethrough"/>
+                            </group-->
+                            <group>
+                                <field name="match_cost" invisible="1"/>
+                                <field name="lc_no" attrs="{'readonly': [('state','not in',('new'))]}"/>
+                                <field name="po_no" attrs="{'readonly': [('state','not in',('new'))]}"/>
+                                <field name="supplier_amount" attrs="{'readonly': [('state','not in',('new'))]}" required="1"/>
+                                <field name="bank" attrs="{'readonly': [('state','not in',('new'))]}"/>
+                               
+                                <field name="amount" attrs="{'readonly': [('state','not in',('new'))]}" required="1"/>
+                            </group>
+                            <group>
+                                <field name="project" attrs="{'readonly': [('state','not in',('new'))]}"/>
+                                <field name="supplier" attrs="{'readonly': [('state','not in',('new'))]}"/>
+                                <field name="supplier_currency" attrs="{'readonly': [('state','not in',('new'))]}"/>
+ <field name="local_currency" attrs="{'readonly': [('state','not in',('new'))]}"/>
+                            </group>
+                       </group>
+                        <group>
+                            <group string="Account">
+                                <field name="lc_account" attrs="{'readonly': [('state','not in',('new'))]}"/>
+                                
+                                <field name="journal_id" attrs="{'readonly': [('state','not in',('new'))]}"/>
+                                <field name="analytic_account_id"/>
+                                <field name="closed_journal_id"/>
+                            </group>
+                            <group string="Date">
+                                <field name="expiry_date" attrs="{'readonly': [('state','not in',('new'))]}"/>
+                                <field name="shipping_date" attrs="{'readonly': [('state','not in',('new'))]}"/>
+                                <field name="lc_date"/>
+                                <field name="shipping_method" attrs="{'readonly': [('state','not in',('new'))]}"/>
+                            </group>
+                        
+                         <group name="Payments_group" string="Payments">
+                            <label for="first_payment" string="First Payments"/>
+                            <div>
+                                <field name="first_payment" class="oe_inline"/> - <field name="f_remain" class="oe_inline"/>
+                            </div>
+                           <label for="dsecond_payment" string="Second Payments"/>
+                            <div>
+                                <field name="second_payment" class="oe_inline"/> - <field name="s_remain" class="oe_inline"/>
+                            </div>
+                            <label for="third_payment" string="Third Payments"/>
+                            <div>
+                                <field name="third_payment" class="oe_inline"/> - <field name="t_remain" class="oe_inline"/>
+                            </div>
+                        </group>
+                    </group>
+                        <group>
+                            <field name="cost_entry">
+                                <tree editable="top">
+                                    <field name="name"/>
+                                    <field name="cost_type"/>
+                                    <field name="account"/>
+                                    <field name="entry_date"/>
+                                    <field name="due_date"/>
+                                    <field name="credit"/>
+                                    <field name="local_amount"/>
+                                    <field name="state"/>
+                                    <button name="ac_lc_entry" type="object" attrs="{'invisible': [('state', '=', 'account')]}" string="Entry" icon="terp-stock_effects-object-colorize"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group>
+                        <group name="Cost" string="Cost">
+                            <label for="first_payment" string="Total Cost"/>
+                            <div>
+                                <field name="total_cost" class="oe_inline" widget="monetary" options="{'currency_field': 'supplier_currency'}"/> ->- <field name="total_cost_sar" class="oe_inline" widget="monetary" options="{'currency_field': 'local_currency'}"/>
+                            </div>
+                            <label for="first_payment" string="Total Not Cost"/>
+                            <div>
+                                <field name="total_not_cost" class="oe_inline" widget="monetary" options="{'currency_field': 'supplier_currency'}"/> ->- <field name="total_not_cost_sar" class="oe_inline" widget="monetary" options="{'currency_field': 'local_currency'}"/>
+                            </div>
+                            <label for="first_payment" string="Total Close Amount"/>
+                            <div>
+                                <field name="total_close_amount" class="oe_inline"/> 
+                            </div>
+                        </group>
+                        <group string="Company">
+                            <field name="user_id" readonly="1"/>
+                            <field name="company_id"/>
+                            <field name="create_date" readonly="1"/>
+                            <field name="notes"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <!--Period lock tree view-->
+
+        <record id='tree_view_memco_lcform' model='ir.ui.view'>
+            <field name='name'>tree.view.memco.lcform</field>
+            <field name='model'>memco.lcform</field>
+            <field name='type'>tree</field>
+            <field name='arch' type='xml'>
+                <tree string='Period Lock Information'>
+                    <field name="lc_no"/>
+                    <field name="po_no"/>
+                    <field name="supplier"/>
+                    <field name="supplier_amount"/>
+                    <field name="supplier_currency"/>
+                    <field name="create_date"/>
+                    <field name="shipping_date"/>
+                    <field name='state'/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="memco_lcform_search_view1" model="ir.ui.view">
+            <field name="name">memco.lcform.search.view</field>
+            <field name="model">memco.lcform</field>
+            <field name="arch" type="xml">
+                <search string="Memco lcform">
+                    <group  expand='0' string='Group by...'>
+                        <filter string='User' icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'user_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id='action_memco_lcform' model='ir.actions.act_window'>
+            <field name='name'>LC FORM</field>
+            <field name='res_model'>memco.lcform</field>
+            <field name='view_type'>form</field>
+            <field name='view_mode'>tree,form</field>
+        </record>
+        
+        <menuitem id="memco_lcform_sub_menu" name="LC Form" sequence="8" parent="purchase.menu_procurement_management" action='action_memco_lcform'/>
+
+	</data>
+</openerp>

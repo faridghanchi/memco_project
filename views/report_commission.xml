@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+<template id="report_commission">
+    <t t-call="report.html_container">
+        <t t-call="report.external_layout">
+            <div class="page">
+                <h2><u>Commission Cerificate</u></h2>
+                <t t-foreach="docs" t-as="o">
+                    <p class="text-center"><strong>1. MEMCO-Middle East Factory for Machine Company Ltd. - Supplier</strong></p>
+                    <p class="text-center"><strong>2. <span t-field="o.delivery_id.partner_id.name"/> - Client</strong></p>
+                
+                <p>
+                <strong><span t-field="o.delivery_id.partner_id.name"/></strong> had purchased from <strong>MEMCO</strong> the following:<br />
+                <t t-foreach="o.line_id" t-as="l"><strong><span t-field="l.project_id.name"/></strong> for ____________<br/></t>
+                MEMCO's commissioning team had commissioned the machine (Mantioned above) on <span t-field="o.delivery_id.date_done"/><br />
+                and had given <strong><span t-field="o.delivery_id.partner_id.name"/></strong> staff a full onsite training about the operation, maintanance and handling of machines. <strong><span t-field="o.delivery_id.partner_id.name"/></strong> technical staff is capable to handle and operate the machines.<br />
+                
+                </p>
+                <p>
+                The machine mentioned above and their accompanying equipments have been checked,tested and accepted accoording to the agreement. <strong><span t-field="o.delivery_id.partner_id.name"/></strong> staff has all the information on safety and proper operation of the machines.
+                </p>
+                </t><br/><br/><br/>
+                <table class="table">
+                        <t t-foreach="docs" t-as="o">
+                            <tr style="font-weight: bold;">
+                                <td>
+                                    <strong>Supplier.: Memco</strong>
+                                </td>
+                                <td>
+                                    <strong>Client.:<span t-field="o.delivery_id.partner_id.name"/></strong>
+                                </td>
+                            </tr>
+                            
+                        </t>
+                </table>
+                <t t-foreach="docs" t-as="o">
+                   Notes: <span t-field="o.notes"/>
+                </t>
+
+
+
+
+                <!--table class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <td class="text-center"><strong>Item name</strong></td>
+                                <td class="text-center"><strong>Qty</strong></td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <t t-foreach="docs" t-as="o">
+                                <t t-if="o.memco_project_id">
+                                    <tr t-foreach="o.memco_project_id" t-as="line2">
+                                        <td class="text-center"><span t-field="line2.product_tmpl_id.name"/></td>
+                                        <td class="text-center"><span t-field="line2.product_qty"/></td>
+                                    </tr>
+                                </t>
+                                <t t-if="not o.memco_project_id">
+                                    <tr t-foreach="o.order_line" t-as="line2">
+                                        <td class="text-center"><span t-field="line2.product_id.name"/></td>
+                                        <td class="text-center"><span t-field="line2.product_uom_qty"/></td>
+                                    </tr>
+                                </t>
+                            </t>
+                            </tbody>
+                        </table-->
+            </div>
+        </t>
+    </t>
+</template>
+</data>
+</openerp>

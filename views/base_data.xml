@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data noupdate="1">
+        
+        <record id="base.lang_en" model="res.lang">
+            <field name="date_format">%d/%m/%Y</field>
+        </record>
+        
+        <record id="base.main_partner" model="res.partner" context="{'default_is_company': True}">
+            <field name="name">Memco</field>
+            <field name="company_id" eval="None"/>
+            <field name="image" eval="False"/>
+            <field name="customer" eval="False"/>
+            <field name="is_company" eval="True"/>
+            <field name="street"></field>
+            <field name="street2"></field>
+            <field name="city">Riyadh</field>
+            <field name="zip">11663</field>
+            <field name="phone">+966 11 2652916</field>
+            <field name="fax">+966 1 265 1817</field>
+            <field name="email">sales@memco.com.sa</field>
+            <field name="website">www.memco.com.sa</field>
+        </record>
+        
+        <!-- Currencies -->
+        <record id="base.SAR" model="res.currency">
+            <field name="name">SAR</field>
+            <field name="symbol">SR</field>
+            <field name="rounding">0.01</field>
+            <field name="accuracy">4</field>
+        </record>
+        <record id="base.rateSAR" model="res.currency.rate">
+            <field name="currency_id" ref="base.SAR" />
+            <field eval="time.strftime('%Y-01-01')" name="name"/>
+            <field name="rate">4.58898972</field>
+        </record>
+        
+        <!-- Basic Company  -->
+        <record id="base.main_company" model="res.company">
+            <field name="name">MEMCO</field>
+            <field name="partner_id" ref="base.main_partner"/>
+            <field name="rml_header1">Middle East Machine Company</field>
+            <field name="currency_id" ref="base.SAR"/>
+        </record>
+    </data>
+</openerp>
