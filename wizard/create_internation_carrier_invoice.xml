@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_inter_invoice_carrier" model="ir.ui.view">
+            <field name="name">Inter Invoice Carrier</field>
+            <field name="model">inter.invoice.carrier</field>
+            <field name="arch" type="xml">
+              <form string="Create invoice">
+                  <group string="Create invoice">
+<!--                      <field name="journal_id" domain="[('type','=',journal_type)]"/>-->
+                      <field name="partner_id" readonly='1'/>
+                      <field name="journal_id" />
+<!--                      <field name="group"/>-->
+                      <field name="invoice_date" />
+                      <field name="ref" readonly='1'/>
+                      <field name="line_id" readonly='1' string="Cost">
+                        <tree>
+                            <field name="product_id" />
+                            <field name="price" />
+                        </tree>
+                      </field>
+                  </group>
+                  <footer>
+                      <button name="open_invoice" string="Create" type="object" class="oe_highlight"/>
+                      or
+                      <button string="Cancel" class="oe_link" special="cancel"/>
+                  </footer>
+             </form>
+            </field>
+        </record>
+
+        <act_window name="International Carrier Invoice"
+            res_model="inter.invoice.carrier"
+            src_model="stock.picking"
+            key2="client_action_multi"
+            multi="False"
+            view_mode="form"
+            view_type="form"
+            target="new"
+            id="action_inter_invoice_carrier1"/>
+    </data>
+</openerp>
+

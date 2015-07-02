@@ -1,0 +1,63 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data>
+        <!--Email template -->
+        <record id="email_template_design_gm" model="email.template">
+            <field name="name">Design to GM - Send by Email</field>
+            <field name="email_from">${(object.user.email or '')|safe}</field>
+            <field name="subject">${object.company_id.name|safe} ${object.state in ('draft', 'sent') and 'Quotation' or 'Order'} (Ref ${object.name or 'n/a' })</field>
+            <field name="partner_to"></field>
+            <field name="model_id" ref="mrp.model_mrp_bom"/>
+            <field name="auto_delete" eval="True"/>
+            <field name="report_template" ref="mrp.action_report_production_order"/>
+            <field name="report_name">New Design Specification for ${object.customer.name}</field>
+            <field name="lang">${object.customer.lang}</field>
+            <field name="body_html"><![CDATA[
+<div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
+
+    <p>Hello sir,</p>
+    <p>New Design from ${object.company_id.name} to our new customer ${object.customer.name} </p>
+
+    <p style="border-left: 1px solid #8e0000; margin-left: 30px;">
+       &nbsp;&nbsp;<strong>REFERENCES</strong><br />
+       &nbsp;&nbsp;Project number: <strong>${object.code}</strong><br />
+       &nbsp;&nbsp;Machine name: <strong>${object.product_tmpl_id.name}</strong><br />
+       &nbsp;&nbsp;Quantity: <strong>${object.product_qty}</strong><br />
+       % if object.user:
+       &nbsp;&nbsp;Your contact: <a href="mailto:${object.user.email or ''}?subject=Order%20${object.name}">${object.user.name}</a>
+       % endif
+    </p>
+</div>
+            ]]></field>
+        </record>
+        
+        <record id="email_to_customer_design" model="email.template">
+            <field name="name">Customer Design specification - Send by Email</field>
+            <field name="email_from">${(object.user.email or '')|safe}</field>
+            <field name="subject">${object.company_id.name|safe} Design for your request (Ref ${object.name or 'n/a' })</field>
+            <field name="partner_to"></field>
+            <field name="model_id" ref="mrp.model_mrp_bom"/>
+            <field name="auto_delete" eval="True"/>
+            <field name="report_template" ref="action_report_bom_structure1"/>
+            <field name="report_name">New Design Specification for ${object.customer.name}</field>
+            <field name="lang">${object.customer.lang}</field>
+            <field name="body_html"><![CDATA[
+<div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
+
+    <p>Hello ${object.customer.name},</p>
+    <p>Here is your Design from ${object.company_id.name}: </p>
+
+    <p style="border-left: 1px solid #8e0000; margin-left: 30px;">
+       &nbsp;&nbsp;<strong>REFERENCES</strong><br />
+       &nbsp;&nbsp;Project number: <strong>${object.code}</strong><br />
+       &nbsp;&nbsp;Machine name: <strong>${object.product_tmpl_id.name}</strong><br />
+       &nbsp;&nbsp;Quantity: <strong>${object.product_qty}</strong><br />
+       % if object.user:
+       &nbsp;&nbsp;Your contact: <a href="mailto:${object.user.email or ''}?subject=Order%20${object.name}">${object.user.name}</a>
+       % endif
+    </p>
+</div>
+            ]]></field>
+        </record>
+    </data>
+</openerp>

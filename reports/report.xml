@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <report 
+            string="Purchase Order" 
+            id="purchase.action_report_purchase_order" 
+            model="purchase.order" 
+            report_type="qweb-pdf"
+            name="memco_project.report_purchaseorder" 
+            file="memco_project.report_purchaseorder" 
+        />
+        <report 
+            string="Purchase Requests" 
+            id="purchase.report_purchase_quotation" 
+            model="purchase.order" 
+            report_type="qweb-pdf"
+            name="memco_project.report_purchasequotation" 
+            file="memco_project.report_purchasequotation"
+        />
+        <report 
+            string="Manufacturing Status" 
+            id="action_report_production_order1" 
+            model="mrp.production" 
+            name="memco_project.report_mrporder" 
+            file="memco_project.report_mrporder" 
+            report_type="qweb-pdf"
+        />
+        <report 
+            string="Production Order" 
+            id="mrp.action_report_production_order" 
+            model="mrp.production" 
+            name="memco_project.report_mrporder1" 
+            file="memco_project.report_mrporder1" 
+            report_type="qweb-pdf"
+        />
+
+        <report 
+            string="Additional Product in Production Order" 
+            id="action_report_additional_product_mrp" 
+            model="mrp.production" 
+            name="memco_project.report_mrporder_additional" 
+            file="memco_project.report_mrporder_additional" 
+            report_type="qweb-pdf"
+        />
+        <report 
+            string="Project Concept for Automation" 
+            id="action_report_project_concept_auto_mrp" 
+            model="mrp.production" 
+            name="memco_project.report_project_concept_auto" 
+            file="memco_project.report_project_concept_auto" 
+            report_type="qweb-pdf"
+        />
+        <report 
+            string="Project Concept for Design" 
+            id="action_report_project_concept_design_mrp" 
+            model="mrp.production" 
+            name="memco_project.report_project_concept_design" 
+            file="memco_project.report_project_concept_design" 
+            report_type="qweb-pdf"
+        />
+
+        <report 
+            string="Technical Specification" 
+            id="action_report_bom_structure1" 
+            model="mrp.bom" 
+            name="memco_project.report_mrpbomstructure_tech" 
+            file="memco_project.report_mrpbomstructure_tech" 
+            report_type="qweb-pdf"
+        />
+        <report 
+            string="Job Order" 
+            id="action_report_job_order1" 
+            model="sale.order" 
+            name="memco_project.report_joborder" 
+            file="memco_project.report_joborder" 
+            report_type="qweb-pdf"
+        />
+        <report 
+            string="Commission Certificate" 
+            id="action_report_commissions" 
+            model="memco.commission" 
+            name="memco_project.report_commission" 
+            file="memco_project.report_commission" 
+            report_type="qweb-pdf"
+        />
+    </data>
+</openerp>
