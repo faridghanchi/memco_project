@@ -44,8 +44,8 @@ class stock_transfer_details(models.TransientModel):
         packs = []
         picking.do_prepare_partial()
         print "================wizard======================"
-        print "Picking ids:>>>", picking_ids, picking
-        print "picking.pack_operation_ids", picking.pack_operation_ids
+#        print "Picking ids:>>>", picking_ids, picking
+#        print "picking.pack_operation_ids", picking.pack_operation_ids
         for op in picking.pack_operation_ids:
             item = {
                 'packop_id': op.id,
@@ -69,7 +69,7 @@ class stock_transfer_details(models.TransientModel):
                 items.append(item)
             elif op.package_id:
                 packs.append(item)
-            print "\n@@@@@@@@@@@@@@Items:.", item
+#            print "\n@@@@@@@@@@@@@@Items:.", item
         total_qty = []
         for line in items:
             total_qty.append(line['quantity'])
@@ -103,7 +103,7 @@ class stock_transfer_details(models.TransientModel):
         # Create new and update existing pack operations
         for lstits in [self.item_ids, self.packop_ids]:
             for prod in lstits:
-                print "\n################## prod", prod
+#                print "\n################## prod", prod
                 pack_datas = {
                     'product_id': prod.product_id.id,
                     'product_uom_id': prod.product_uom_id.id,
@@ -126,7 +126,7 @@ class stock_transfer_details(models.TransientModel):
                     processed_ids.append(packop_id.id)
 
                 #probuse
-                print "prod.local_carrier_cost", prod.local_carrier_cost
+#                print "prod.local_carrier_cost", prod.local_carrier_cost
                 prod.product_id.local_carrier_cost = prod.local_carrier_cost/prod.quantity
                 prod.product_id.international_c_cost = prod.international_c_cost/prod.quantity
                 prod.product_id.unit_lc_cost = prod.unit_lc_cost/prod.quantity
