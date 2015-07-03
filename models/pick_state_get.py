@@ -62,6 +62,7 @@ class stock_picking(osv.osv):
     _name = 'stock.picking'
     
     
+    @api.v7
     def _state_get(self, cr, uid, ids, field_name, arg, context=None):
         '''The state of a picking depends on the state of its related stock.move
             draft: the picking has no line or any one of the lines is draft
@@ -69,9 +70,7 @@ class stock_picking(osv.osv):
             confirmed, waiting, assigned, partially_available depends on move_type (all at once or partial)
         '''
         res = {}
-        print "RRRRRRRRRRRRRRRRRRRRRRRRR"
         for pick in self.browse(cr, uid, ids, context=context):
-            print "pick", pick
             if (not pick.move_lines) or any([x.state == 'draft' for x in pick.move_lines]):
                 res[pick.id] = 'draft'
                 continue
@@ -141,26 +140,18 @@ class stock_picking(osv.osv):
 
     def do_shipping_process(self, cr, uid, ids, context=None):
         """ state=Accepted and probability=100 """
-        print " ids", ids
         move_obj = self.pool.get('stock.move')
         picking_ids = self.browse(cr,uid,ids,context=context)
-        print "picking_ids", picking_ids
-        print 'MOve lines:>>', picking_ids.move_lines
         for p in picking_ids.move_lines:
-            print 'P:>>>', p
             move_obj.write(cr,uid,p.id,{'state':'shipping_process'})
         self.write(cr,uid,ids,{'state':'shipping_process','description':'BAAAAAAAAAAAAAAA'})
         return True
 #        
     def do_ready_shipping(self, cr, uid, ids, context=None):
-        print " ids", ids
         """ state=Accepted and probability=100 """
         move_obj = self.pool.get('stock.move')
         picking_ids = self.browse(cr,uid,ids,context=context)
-        print "picking_ids", picking_ids
-        print 'MOve lines:>>', picking_ids.move_lines
         for p in picking_ids.move_lines:
-            print 'P:>>>', p
             move_obj.write(cr,uid,p.id,{'state':'ready_to_shipping'})
         self.write(cr,uid,ids,{'state':'ready_to_shipping','description':'adadasdasdasdasd'})
         return True
@@ -209,9 +200,7 @@ class stock_picking(osv.osv):
                     self.do_recompute_remaining_quantities(cr, uid, [picking.id], context=context)
                 if todo_move_ids and not context.get('do_only_split'):
                     self.pool.get('stock.move').action_done(cr, uid, todo_move_ids, context=context)
-                    print "OKOKOK"
                     if picking.picking_type_id.code == 'incoming':
-                        print "kokokokokokok"
                         self.send_mail_memco_department(cr,uid,todo_move_ids)
                 elif context.get('do_only_split'):
                     context = dict(context, split=todo_move_ids)
@@ -233,12 +222,9 @@ class stock_picking(osv.osv):
         if move_rec.origin:
             pr_id = pur_obj.search(cr,uid,[('name','=',move_rec.origin)])[0]
             mo_iddd = pur_obj.browse(cr,uid,pr_id).project
-            print "mo_iddd.user_id", mo_iddd
             if mo_iddd.user_id:
-                print "mo_iddd.user_id.partner_id.email", mo_iddd.user_id.partner_id.email
                 template_obj.write(cr, uid, template_inst, {'email_to':mo_iddd.user_id.partner_id.email}, context=None)
                 action = template_obj.send_mail(cr,uid, template_inst, mo_iddd.id, context=None)
-                print "action:>>>>>..", action
             else:
                 _logger.warning("Mail are not sent to any one because Project not assign in Purchase Order.")
         
@@ -246,15 +232,11 @@ class stock_picking(osv.osv):
 
         
         now = datetime.now().strftime("%Y-%m-%d")
-        print "Now time:<<<", now
         get_ids = self.search(cr, uid, [('notification_date','=',now)], context=context)
-        print "\nget_ids", get_ids
         template_obj = self.pool.get('email.template')
         template_inst = template_obj.search(cr,uid,[('name','=','Notification Shipment - Send by Email')])[0]
-        print "template_inst", template_inst
         template_id = template_obj.browse(cr, uid, template_inst)
         for data in self.browse(cr,uid,get_ids):
-            print "data:>>>", data, data.owner_id.email
             template_obj.write(cr, uid, template_inst, {'email_to':data.owner_id.email}, context=context)
             action = template_obj.send_mail(cr,uid, template_inst, data.id, context)
         return True

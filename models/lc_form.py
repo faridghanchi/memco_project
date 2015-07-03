@@ -323,9 +323,7 @@ class memco_lcform(models.Model):
         else:
             sign = -1
                 
-        print "self.analytic_account_id", self.analytic_account_id
         move_id = acc_move_obj.create(entry)
-        print "move_id", move_id
         data_credit ={
                 'name': 'LC ENTRY',
                 'ref': self.lc_no,
@@ -340,7 +338,6 @@ class memco_lcform(models.Model):
 #                'amount_currency': company_currency.id <> current_currency.id and self.total_not_cost or 0.0,
                 'date': self.lc_date,
             }
-        print "data_credit", data_credit
         
         data_debit = {
                 'name': 'LC ENTRY',
@@ -364,7 +361,6 @@ class memco_lcform(models.Model):
         
         pick_obj = self.env['stock.picking']
         inids = pick_obj.search([('origin','=',self.po_no.name),('state','!=','done')])
-        print "inids:>>>", inids
         for a in inids:
             a.write({'lc_cost':self.total_cost})
         
@@ -381,7 +377,6 @@ class memco_lcform(models.Model):
         inf = now1 - timedelta(days=8)
         inform_date = inf.strftime('%Y-%m-%d')
         get_ids = self.search(cr, uid, [('shipping_date','=',inform_date)], context=context)
-        print "get_ids", get_ids
         
         m_data = res_obj.browse(cr, uid, m_id)
         manager_list = []

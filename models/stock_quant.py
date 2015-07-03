@@ -46,7 +46,6 @@ class stock_quant(models.Model):
 
     def move_quants_write(self, cr, uid, quants, move, location_dest_id, dest_package_id, context=None):
         context=context or {}
-        print "dsdsdsdsdd",quants,location_dest_id,move.id
         vals = {'location_id': location_dest_id.id,
                 'history_ids': [(4, move.id)],
                 'reservation_id': False}
@@ -57,10 +56,7 @@ class stock_quant(models.Model):
             i+=1
             l_cost.append(quant.local_carrier_cost/quant.qty)
             i_cost.append(quant.international_c_cost/quant.qty)
-        print "@@@@@@@@@@@@@@@@@@@@@@@@", sum(l_cost),sum(i_cost), 
-        print "Average:>>>", sum(l_cost)/i,sum(i_cost)/i, i
-        ass = self.pool.get('stock.move').write(cr, uid, [move.id], {'l_cost': sum(l_cost)/i, 'i_cost': sum(i_cost)/i})
-        print "AS", ass
+        self.pool.get('stock.move').write(cr, uid, [move.id], {'l_cost': sum(l_cost)/i, 'i_cost': sum(i_cost)/i})
         if not context.get('entire_pack'):
             vals.update({'package_id': dest_package_id})
         self.write(cr, SUPERUSER_ID, [q.id for q in quants], vals, context=context)
@@ -69,15 +65,11 @@ class stock_quant(models.Model):
                       force_location_from=False, force_location_to=False, context=None):
         '''Create a quant in the destination location and create a negative quant in the source location if it's an internal location.
         '''
-        print "Create Quant and Move:......", move
         if context is None:
             context = {}
         price_unit = self.pool.get('stock.move').get_price_unit(cr, uid, move, context=context)
         location = force_location_to or move.location_dest_id
         rounding = move.product_id.uom_id.rounding
-        print "move.unit_local_c_cost", move.unit_local_c_cost
-        print "move.unit_inter_c_cost", move.unit_inter_c_cost
-        print "move.unit_lc_cost", move.unit_lc_cost
         vals = {
             'product_id': move.product_id.id,
             'location_id': location.id,

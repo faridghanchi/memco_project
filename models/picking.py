@@ -96,7 +96,6 @@ class stock_picking(models.Model):
             picking_quants = []
             #Calculate packages, reserved quants, qtys of this picking's moves
             for move in picking.move_lines:
-                print "#########",move, move.state
                 if move.state not in ('assigned', 'confirmed','shipping_process'):
                     continue
                 move_quants = move.reserved_quant_ids
@@ -110,7 +109,6 @@ class stock_picking(models.Model):
                         forced_qties[move.product_id] = forced_qty
             print "@@@@@@2",picking_quants, forced_qties
             for vals in self._prepare_pack_ops(cr, uid, picking, picking_quants, forced_qties, context=context):
-                print "Vales:>>>>>>", vals
                 pack_operation_obj.create(cr, uid, vals, context=ctx)
         #recompute the remaining quantities all at once
         self.do_recompute_remaining_quantities(cr, uid, picking_ids, context=context)

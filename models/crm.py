@@ -54,7 +54,7 @@ class crm_lead(models.Model):
         m_data = group_obj.browse(cr,uid,m_id)
         manager_list = []
         for lead in self.browse(cr, uid, ids, context=context):
-            print "lead :>>>", lead,lead.name
+#            print "lead :>>>", lead,lead.name
             stage_id = crm_case_obj.search(cr, uid, [('name', '=', 'Project Design')])[0]
             if stage_id:
                 if stages_leads.get(stage_id):

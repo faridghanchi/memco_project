@@ -37,7 +37,6 @@ class purchase_order(models.Model):
     def _amount_all(self):
         res = {}
         cur_obj=self.env['res.currency']
-        print "%%%%%%%%5", self.discount_amt
         for order in self:
             res[order.id] = {
                 'amount_untaxed': 0.0,
@@ -50,7 +49,6 @@ class purchase_order(models.Model):
                val1 += line.price_subtotal
 #               for c in self.env['account.tax'].compute_all(line.taxes_id, line.price_unit, line.product_qty, line.product_id, order.partner_id)['taxes']:
 #                    val += c.get('amount', 0.0)
-            print "++++++++++++++++++++++++++++++", val1, self.discount_amt
             self.amount_tax=0.00#cur_obj.round(cr, uid, cur, val)
             self.amount_untaxed=val1
             self.amount_total=val1 - self.discount_amt

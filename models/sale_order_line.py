@@ -57,11 +57,6 @@ class sale_order(models.Model):
 
 
 
-    @api.multi
-    def _prepare_invoice(self,order,lines):
-        res = super(account_invoice,self)._prepare_invoice(self,order,lines)
-        print "Res:>>>>", res,llllll
-    
     @api.v7
     def _prepare_invoice(self, cr, uid, order, lines, context=None):
         """Prepare the dict of values to create the new invoice for a
@@ -111,16 +106,14 @@ class sale_order(models.Model):
         product = self.standard_project_id.product_tmpl_id.id
         qty = self.standard_project_id.product_qty
         uom = self.standard_project_id.product_uom.id
-        asd = {
+        sol_dir = {
         'product_id':product,
         'product_uom_qty':qty,
         'name':self.standard_project_id.product_tmpl_id.name,
         'order_id':self.id
         }
-        print "asd", asd
-        aaa = self.env['sale.order.line'].create(asd)
-        print "aaa", aaa
-        self.order_line = [(4, 0, aaa)]
+        create_id = self.env['sale.order.line'].create(sol_dir)
+        self.order_line = [(4, 0, create_id)]
         return True
 
     @api.one
@@ -230,7 +223,6 @@ class sale_order(models.Model):
         template_obj = self.pool.get('email.template')
         template_inst = template_obj.search(cr,uid,[('name','=','Job card specification - Send by Email')])[0]
         template_id = template_obj.browse(cr, uid, template_inst)
-        print "users", users
         if not users:
             raise osv.except_osv(('Warning'), ('Please choose anyone Users'))
         for user in users:
@@ -245,7 +237,6 @@ class sale_order(models.Model):
         if so_obj.memco_lead_id:
             crm_case_obj = self.pool.get('crm.case.stage')
             stage_id = crm_case_obj.search(cr,uid,[('name', '=', 'Quotation Sent')])[0]
-            print "stage_id", stage_id
             self.pool.get('crm.lead').write(cr,uid,so_obj.memco_lead_id.id,{'stage_id':stage_id})
             
         self._ac_entry_project(cr,uid,ids,context=context)
@@ -255,8 +246,6 @@ class sale_order(models.Model):
     def _ac_entry_project(self):
 #        property_account_receivable
 #        account
-        print "##########debit:>", self.partner_id.property_account_receivable
-        print "#### credit :>>>", self.account
 
         ctx = dict(self._context)
         ctx.update({'date': self.date_order})
@@ -268,7 +257,6 @@ class sale_order(models.Model):
         acc_move_obj = self.env['account.move']
         move_line_obj = self.env['account.move.line']
         company_currency = self.company_id.currency_id
-        print "company_currency", company_currency.name
         current_currency = self.pricelist_id.currency_id
         amount = current_currency.compute(self.amount_total, company_currency)
         entry = {
@@ -283,7 +271,6 @@ class sale_order(models.Model):
             sign = -1
             
         move_id = acc_move_obj.create(entry)
-        print "move_id", move_id
         data_credit ={
                 'name': 'Project start entry',
                 'ref': self.name,
@@ -298,7 +285,6 @@ class sale_order(models.Model):
                 'amount_currency': company_currency.id <> current_currency.id and -sign * self.amount_total or 0.0,
                 'date': self.date_order,
             }
-        print "data_credit", data_credit
         
         data_debit = {
                 'name': 'Project start entry',

@@ -148,15 +148,15 @@ class stock_move(models.Model):
         all_ids = []
         print "*****@@@@@@@@@@@@@@", self
         for a in self:
-            print '111',a.picking_id.move_lines
+#            print '111',a.picking_id.move_lines
             for mo_line in a.picking_id.move_lines:
                 if mo_line.id not in all_id: 
                     all_id.append(mo_line.id)
                     total_qty.append(mo_line.product_uom_qty)
-        print "Total_qty:>>>>", all_id, total_qty
+#        print "Total_qty:>>>>", all_id, total_qty
         for aa in self:
             for mo_line in aa.picking_id.move_lines:
-                print "aa.picking_id.carrier_cost :>>>>>>>>>>>", aa.picking_id.i_carrier_cost
+#                print "aa.picking_id.carrier_cost :>>>>>>>>>>>", aa.picking_id.i_carrier_cost
                 if mo_line.id not in all_ids: 
                     a = ((aa.picking_id.i_carrier_cost *((100 * mo_line.product_uom_qty) /sum(total_qty)))/100)
                     b = ((aa.picking_id.l_carrier_cost *((100 * mo_line.product_uom_qty) /sum(total_qty)))/100)
@@ -176,10 +176,9 @@ class stock_move(models.Model):
         suppliers =[]
         for a in p.seller_ids:
             suppliers.append(a.name.id)
-        print "suppliers:>>>>", suppliers
+#        print "suppliers:>>>>", suppliers
         if res:
             res['value'].update({'supplier_ids':suppliers})
-        print "res:>>>>>.."
         return res
 
     
