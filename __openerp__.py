@@ -24,7 +24,7 @@
     'version': '1.0',
     'author': 'Probuse CS & Amazing Bizs',
     'depends': ['crm','purchase','sale','stock','delivery','mrp','mrp_operations','account','sale_after_service','probuse_product_search','memco_po_discount'],
-    'website': '',
+    'website': 'www.amazingbizs.com',
 
     'description': """ 
     Improved Purchase, Production, Sale
