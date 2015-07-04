@@ -45,7 +45,7 @@
                         </header>
                     </xpath>
                     <xpath expr="/form/sheet/group" position="inside" >
-                        <group string="Standard">
+                        <group string="Standard" >
                             <field name="standard_project_id" domain="[('standard_design','=',True)]"/>
                             <button name="button_get_bom_project" states="draft,sent" string="(update)" type="object" class="oe_edit_only oe_link"/>
                         </group>

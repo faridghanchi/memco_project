@@ -6,20 +6,18 @@ access_product_new_category_plant_manager,product.new.category.plant.manager,mod
 access_product_new_category_automation_manager,product.new.category.automation.manager,model_product_new_category,memco_project.group_automation_manager,1,1,1,1
 access_carrier_extra_cost_u,access_carrier_extra_cost,model_carrier_extra_cost,base.group_user,1,1,1,1
 access_carrier_extra_cost_m,access_carrier_extra_cost,model_carrier_extra_cost,base.group_partner_manager,1,1,1,1
-
-
-access_crm_lead,access_crm_lead,model_crm_lead,memco_project.group_plant_manager,1,1,1,0
+access_crm_lead,access_crm_lead,model_crm_lead,memco_project.group_plant_manager,1,0,0,0
 access_mrp_bom,access_mrp_bom,model_mrp_bom,memco_project.group_plant_manager,1,1,1,0
 access_mrp_bom_line,access_mrp_bom_line,model_mrp_bom_line,memco_project.group_plant_manager,1,1,0,0
-
 access_purchase_order,access_purchase_order,model_purchase_order,memco_project.group_plant_manager,1,1,1,0
 access_purchase_order_line,access_purchase_order_line,model_purchase_order_line,memco_project.group_plant_manager,1,1,1,0
-
+access_product_product1,access_product_product1,product.model_product_product,memco_project.group_plant_manager,1,1,1,0
+access_product_template1,access_product_template1,product.model_product_template,memco_project.group_plant_manager,1,1,1,0
+access_price_history_plant_manager,prices.history plant manager,product.model_product_price_history,memco_project.group_plant_manager,1,1,1,0
 access_memco_lcform,access_memco_lcform,model_memco_lcform,purchase.group_purchase_manager,1,1,1,1
 access_lc_entry,access_lc_entry,model_lc_entry,purchase.group_purchase_manager,1,1,1,1
 access_memco_lc_shipping,access_memco_lc_shipping,model_memco_lc_shipping,purchase.group_purchase_manager,1,1,1,1
-
 access_memco_commission,access_memco_commission,model_memco_commission,base.group_sale_manager,1,1,1,1
 access_memco_comm_line,access_memco_comm_line,model_memco_comm_line,base.group_sale_manager,1,1,1,1
-
 access_memco_lesser_request,memco_memco_lesser_request,model_memco_lesser_request,stock.group_stock_manager,1,1,1,1
+access_mrp_bom_sale_mgr,access_bom_mrp_sale_mgr,model_mrp_bom,base.group_sale_manager,1,1,1,0

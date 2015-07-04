@@ -259,6 +259,8 @@ class sale_order(models.Model):
         company_currency = self.company_id.currency_id
         current_currency = self.pricelist_id.currency_id
         amount = current_currency.compute(self.amount_total, company_currency)
+        if not self.journal_id or not self.account:
+            raise Warning(_('Alert'),'Please set Account / journal so accounting entry create')
         entry = {
         'journal_id':self.journal_id.id,
         'period_id':period_ids.id,
@@ -303,7 +305,7 @@ class sale_order(models.Model):
             }
         qw2=move_line_obj.create(data_debit)
         qw1 = move_line_obj.create(data_credit)
-        
+        print "qw2", qw2, qw1
         
 #    def mail_send_to_pm(self, cr, uid, ids, context=None):
 #        self_obj = self.browse(cr, uid, ids)[0]

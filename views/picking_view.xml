@@ -19,6 +19,9 @@
                     <field name="origin" position="after">
                         <field name="notification_date" />
                     </field>
+                    <xpath expr="/form/header/button[@name='force_assign']" position="replace">
+                        <button name="force_assign" states="confirmed,waiting,partially_available" string="Force Availability" type="object" groups="memco_project.group_g_manager"/>
+                    </xpath>
                     <xpath expr="/form/header/button[@name='do_enter_transfer_details']" position="replace">
                         <button name="do_enter_transfer_details" states="shipping_process,partially_available,assigned" string="Transfer" groups="stock.group_stock_user" type="object" class="oe_highlight"/>
                     </xpath>

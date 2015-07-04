@@ -17,12 +17,27 @@
             </field>
         </record>
 
+
+        
+        <record model="ir.ui.view" id="make_quot_wizard_view_oppor">
+            <field name="name">CRM - crm.make.sale - Make Quote Inherit</field>
+            <field name="model">crm.make.sale</field>
+            <field name="inherit_id" ref="sale_crm.view_crm_make_sale"/>
+            <field name="arch" type="xml">
+                <data>
+                    <field name="close" position="replace"/>
+                </data>
+            </field>
+        </record>
+        
         <record model="ir.ui.view" id="crm_case_form_view_oppor123">
             <field name="name">CRM - Opportunities - Quote Inherit</field>
             <field name="model">crm.lead</field>
             <field name="inherit_id" ref="sale_crm.crm_case_form_view_oppor"/>
             <field name="arch" type="xml">
                 <data>
+                    <xpath expr="/form/header/button[@string='Mark Lost']" position="replace"/>
+                    <xpath expr="/form/header/button[@string='Mark Won']" position="replace"/>
                      <xpath expr="/form/header/button[@string='Convert to Quotation']" position="replace">
                         <button attrs="{'invisible': [('probability', 'in', [30,50,60])],'invisible': [('project_design', '=',True)]}" name="case_project_design" string="Project Design" type="object" class="oe_highlight" />
                         <button attrs="{'invisible': [('probability', '=', 100)]}" string="Create Quotation" name="%(sale_crm.action_crm_make_sale)d" type="action" class="oe_highlight"/>

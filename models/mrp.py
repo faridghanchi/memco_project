@@ -56,14 +56,36 @@ class mrp_bom(models.Model):
     
     @api.one
     def action_button_design_done(self):
-        if not self.sub_tech_spe:
-             raise osv.except_osv(_('Alert'), _('Please submit the Technical specification to GM'))
+#        if not self.sub_tech_spe:
+#             raise osv.except_osv(_('Alert'), _('Please submit the Technical specification to GM'))
+        
+        
+        po_data = self
+        model_obj = self.env['ir.model.data']
+        res_obj = self.env['res.groups']
+        lead_obj = self.env['crm.lead']
+#        lead=lead_obj.browse(po_data.lead_id)
+        print "lead :>>>", po_data,po_data.lead_id
+        view_model, m_id = model_obj.get_object_reference('memco_project', 'group_g_manager')
+        m_data = res_obj.browse(m_id)
+        manager_list = []
+        #find the partner related to Budget Control group
+        for user in m_data.users:
+           manager_list.append(user.partner_id.id)
+        #Send the message to all Budget Control Manager for reminder of PO Approval
+        print "manager_list", manager_list, po_data, po_data.lead_id
+        self.message_post(body = _("Dear Sir, <br/><br/> Design is ready for  %s.\
+                           <br/> Thank you, <br/> %s" %(po_data.lead_id.name, po_data.user.name)) ,
+                          type = 'comment',
+                          subtype = "mail.mt_comment",context = None,
+                          model = 'mrp.bom', res_id = po_data.id, 
+                          partner_ids = manager_list)
+        
         self.write({ 'state' : 'design_ready', })
         crm_case_obj = self.env['crm.case.stage']
         stage_id = crm_case_obj.search([('name', '=', 'Design Ready')])
         if self.lead_id:
             self.lead_id.stage_id = stage_id
-        self.message_post(body=_("Design ready and send to GM"))
         return True
      
 #    @api.model
@@ -134,7 +156,6 @@ class mrp_bom(models.Model):
 #                else:
 #                    name = _('Customer') + ' (' + record.name + ')'
             res.append((record.id, name))
-        print "res:>>>>", res
         return res
         
 class mrp_bom_line(models.Model):
@@ -148,7 +169,7 @@ class mrp_bom_line(models.Model):
     @api.multi
     @api.onchange('price','product_qty')
     def _total_price(self):
-        print "alternative_product",self.product_id.alternative_product
+        print "alternative_product"
         alternate = []
         warning_msgs = ''
         warning = {}
@@ -319,7 +340,7 @@ class mrp_production(models.Model):
                     'date_planned':datetime.today(),
                     }))
                 stock_move.genarate_pr = True
-            print "self.bom_id.name", self.bom_id.name, self.bom_id.code,self.id
+            print "self.bom_id.name"
             pr = {
                 'partner_id':supp.id,
                 'date_order':datetime.today(),
@@ -336,7 +357,7 @@ class mrp_production(models.Model):
         
     @api.multi
     def _cost_raw_calculation(self, production):
-        print "Production:>>.", production, self
+        print "Production:>>."
         cost = 0.0
          
         for line in production.move_lines2:
@@ -347,8 +368,7 @@ class mrp_production(models.Model):
             inter_cost = line.i_cost * line.product_uom_qty
             lc_cost = line.lc_cost * line.product_uom_qty
             cost += p_cost + local_cost + inter_cost + lc_cost
-            print "Cost:>>.", cost
-        print "LAST   >>>", cost
+            print "Cost:>>."
         production.product_id.standard_price = cost
 
     @api.multi
@@ -366,8 +386,6 @@ class mrp_production(models.Model):
         proc_obj = self.env["procurement.order"]
         procs = proc_obj.search([('production_id', 'in', [self.id])])
         proc_obj.check(procs)
-        
-        
         
         
     @api.v7
@@ -418,9 +436,6 @@ class mrp_production(models.Model):
             'group_id': production.move_prod_id.group_id.id,
             'supplier_ids': [(6, 0, seller_ids_list)] #kaushik
         }
-        print "\nOOOOOOOOOOO", value
-                 
-            
         move_id = stock_move.create(cr, uid, value, context=context)
         
         if prev_move:
