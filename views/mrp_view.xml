@@ -27,11 +27,11 @@
                         <button name="%(memco_project.move_release)d"
                                                 string="Release / Delete" type="action"
                                                 icon="terp-stock_symbol-selection" context="{'consume': True}"
-                                                states="assigned,confirmed"/>
+                                                states="assigned"/>
                         <button name="%(memco_project.move_assign)d"
                                                 string="Assign to project" type="action"
                                                 icon="terp-stock_effects-object-colorize" context="{'consume': True}"
-                                                states="assigned,confirmed"/>
+                                                states="assigned"/>
                     </xpath>
                     <field name="priority" position="after">
                         <field name="lead" string="Opportunities"/>
