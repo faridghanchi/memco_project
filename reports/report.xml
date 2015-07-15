@@ -84,5 +84,14 @@
             file="memco_project.report_commission" 
             report_type="qweb-pdf"
         />
+        
+        <report 
+            string="W/H Manager Approval" 
+            id="action_report_wh_mgr_approval" 
+            model="mrp.production" 
+            name="memco_project.report_wh_mgr_approval" 
+            file="memco_project.report_wh_mgr_approval" 
+            report_type="qweb-pdf"
+        />
     </data>
 </openerp>
