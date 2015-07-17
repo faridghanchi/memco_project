@@ -32,6 +32,9 @@
                                 <field name="disc_amt" />
                             </group>
                                 </xpath>
+                          <xpath expr="//tree[@string='Purchase Order Lines']/field[@name='price_subtotal']" position='before'>
+                              <field name="line_discount"/>
+                          </xpath>
                 
         </field>
     </record>

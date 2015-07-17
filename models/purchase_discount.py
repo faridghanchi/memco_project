@@ -113,4 +113,21 @@ class purchase_order(models.Model):
             'disc_amt': order.disc_amt,
             'discount_amt': order.discount_amt
         }
-   
+
+
+class purchase_order_line(models.Model):
+    _inherit = 'purchase.order.line'
+    
+    @api.multi
+    @api.depends('order_id.discount_amt')
+    def _compute_line_discount(self):
+        for line in self:
+            if line.price_subtotal:
+                order_dicount_amt = line.order_id.discount_amt
+                order_total_amt = line.order_id.amount_untaxed
+                discount_perc = (line.price_subtotal * 100) / order_total_amt
+                line_discount = (order_dicount_amt * discount_perc)/100
+                line.line_discount = line_discount
+    
+    line_discount = fields.Float(compute= '_compute_line_discount',string='Discount')
+
