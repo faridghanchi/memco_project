@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    
+    <record id="view_sale_order_form_memco_discount" model="ir.ui.view">
+            <field name="name">sale.order.form.sale.memco.discount</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+            <data>
+                <!--xpath expr="/form/sheet/notebook/page[@string='Order Lines']/group[@class='oe_subtotal_footer oe_right']" position='after'>
+                    <group class="oe_subtotal_footer oe_left">
+                        <field name="disc_method" />
+                        <field name="disc_amt" />
+                    </group>
+                </xpath-->
+                <xpath expr="//group[@name='sale_total']" position="before">
+                    <group class="oe_subtotal_footer oe_left">
+                        <field name="disc_method" />
+                        <field name="disc_amt" />
+                    </group>
+                </xpath>
+                <field name="amount_untaxed" position="after">
+                    <field name="discount_amt" />
+                </field>
+                <field name="price_subtotal" position='after'>
+                    <field name="line_discount"/>
+                    <field name="price_nettotal"/>
+                </field>
+            </data>
+                <!--group class="oe_subtotal_footer oe_right">
+                    <field name="amount_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <field name="amount_tax" widget="monetary" options="{'currency_field': 'currency_id'}" invisible="1"/>
+                    <field name="discount_amt" />
+                    <div class="oe_subtotal_footer_separator oe_inline">
+                        <label for="amount_total"/>
+                        <button name="button_dummy"
+                            states="draft" string="(update)" type="object" class="oe_edit_only oe_link"/>
+                    </div>
+                    <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                </group>
+                <group class="oe_subtotal_footer oe_left">
+                    <field name="disc_method" />
+                    <field name="disc_amt" />
+                </group-->
+            <!--xpath expr="//tree[@string='Sale Order Lines']/field[@name='price_subtotal']" position='after'>
+                  <field name="line_discount"/>
+                  <field name="price_nettotal"/>
+            </xpath-->
+        </field>
+    </record>
+</data>
+</openerp>
