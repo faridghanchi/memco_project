@@ -28,11 +28,19 @@ class sale_order(models.Model):
 
     _inherit = 'sale.order'
 
+
+    @api.model
+    def _user_get(self):
+        user_id = self.env['res.users'].search([('id', '=', self.env.uid)], limit=1)
+        if user_id:
+            return user_id
+        return False
+    
     memco_project_id = fields.Many2one('mrp.bom',string='Project')
     memco_lead_id = fields.Many2one('crm.lead',string='Lead')
     estimated_date = fields.Date()
     send_to_all = fields.Boolean()
-    users = fields.Many2many('res.users',string='Users')
+    users = fields.Many2many('res.users',string='Users', default=_user_get)
     standard_project_id = fields.Many2one('mrp.bom',string='Standard Project')
     tag = fields.Selection([('machine','Machine'),('raw_material','Raw Material'),('services','Services')],string="Tag")
     account = fields.Many2one('account.account','Account')
@@ -123,7 +131,8 @@ class sale_order(models.Model):
         self.memco_project_id.sub_tech_spe = False
         crm_case_obj = self.env['crm.case.stage']
         stage_id = crm_case_obj.search([('name', '=', 'Re-Design')])
-        self.memco_lead_id.stage_id = stage_id
+        if self.memco_lead_id:
+            self.memco_lead_id.stage_id = stage_id
         self.message_post(body=_("Please Re-Design"))
         return True
     
@@ -136,7 +145,8 @@ class sale_order(models.Model):
             self.memco_project_id.state = 'joborder'
         crm_case_obj = self.env['crm.case.stage']
         stage_id = crm_case_obj.search([('name', '=', 'Job Order Sent')])
-        self.memco_lead_id.stage_id = stage_id
+        if self.memco_lead_id:
+            self.memco_lead_id.stage_id = stage_id
         self.message_post(body=_("Job Order send"))
         return True
         
@@ -147,7 +157,8 @@ class sale_order(models.Model):
             crm_case_obj = self.pool.get('crm.case.stage')
             lead_obj = self.pool.get('crm.lead')
             stage_id = crm_case_obj.search(cr,uid,[('name', '=', 'Quotation Sent')])[0]
-            lead_obj.write(cr, uid, o.memco_lead_id.id, {'stage_id': stage_id}, context=context)
+            if o.memco_lead_id:
+                lead_obj.write(cr, uid, o.memco_lead_id.id, {'stage_id': stage_id}, context=context)
             self.write(cr,uid,ids,{'state':'sent'})
             self.message_post(cr, uid, ids, body=_("Quotation sent to Customer"), context=context)
         return True
@@ -239,7 +250,7 @@ class sale_order(models.Model):
             stage_id = crm_case_obj.search(cr,uid,[('name', '=', 'Quotation Sent')])[0]
             self.pool.get('crm.lead').write(cr,uid,so_obj.memco_lead_id.id,{'stage_id':stage_id})
             
-        self._ac_entry_project(cr,uid,ids,context=context)
+#        self._ac_entry_project(cr,uid,ids,context=context)
         return super(sale_order, self).action_button_confirm(cr, uid, ids, context=context)
 
     @api.multi

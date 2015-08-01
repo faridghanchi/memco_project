@@ -39,7 +39,7 @@
                 <xpath expr="/form/sheet/notebook/page[@string='Products']/field[@name='order_line']/tree/field[@name='price_subtotal']" position='before'>
                     <field name='avail_qty'/>
                     <field name='incoming_qty'/>
-                    <field name='forecast_qty' string="Available qty"/>
+                    <field name='forecast_qty'/>
                     <field name='source_ref'/>
                     
                 </xpath>

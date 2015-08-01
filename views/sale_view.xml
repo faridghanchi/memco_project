@@ -51,8 +51,8 @@
                         </group>
                     </xpath>
                     <field name="project_id" position="after">
-                        <field name="account"/>
-                        <field name="journal_id" />
+                        <field name="account" invisible="1"/>
+                        <field name="journal_id" invisible="1"/>
                     </field>
                     <field name="date_order" position="after">
                         <field name="estimated_date"/>
@@ -66,7 +66,7 @@
 <!--                        class="oe_highlight" string="Send email to Purchase Manager" />-->
 <!--                    </xpath>-->
                     <xpath expr="/form/sheet/notebook/page[@string='Other Information']/group/group/field[@name='origin']" position='after'>
-                        <field name='memco_lead_id' string="Lead" required='1'/>
+                        <field name='memco_lead_id' string="Lead"/>
                     </xpath>
 
                     <xpath expr="/form/sheet/notebook/page[@string='Order Lines']/field[@name='order_line']/form/group/group/field[@name='tax_id']" position='attributes'>
