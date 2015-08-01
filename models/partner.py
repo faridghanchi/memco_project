@@ -28,6 +28,7 @@ class res_partner(models.Model):
     _inherit = 'res.partner'
     project = fields.One2many('mrp.bom','customer')
     contact_name = fields.Char()
+    partner_ac_type = fields.Selection([('other','Other'),('trade','Trade'),('staff','Staff')],'Partner account Type')
     
     
     

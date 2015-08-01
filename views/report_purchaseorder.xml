@@ -18,10 +18,10 @@
                         <div>
                             Email:<span t-field="o.partner_id.email"/>
                         </div>
-                        <div>
+                        <div t-if="o.payment_term_id.name">
                             Payment Terms:<span t-field="o.payment_term_id.name"/>
                         </div>
-                        <div>
+                        <div t-if="o.pr_priority">
                             Priority:<span t-field="o.pr_priority"/>
                         </div>
                         
@@ -66,7 +66,9 @@
                         <th><strong>Description</strong></th>
                         <th class="text-right"><strong>Qty</strong></th>
                         <th class="text-right"><strong>Unit Price</strong></th>
-                        <th class="text-right"><strong>Net Price</strong></th>
+                        <th class="text-right"><strong>Total</strong></th>
+                        <th class="text-right"><strong>Discount</strong></th>
+                        <th class="text-right"><strong>Net Total</strong></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -83,6 +85,14 @@
                         </td>
                         <td class="text-right">
                             <span t-field="line.price_subtotal"
+                                t-field-options='{"widget": "monetary", "display_currency": "o.pricelist_id.currency_id"}'/>
+                        </td>
+                        <td class="text-right">
+                            <span t-field="line.line_discount"
+                                t-field-options='{"widget": "monetary", "display_currency": "o.pricelist_id.currency_id"}'/>
+                        </td>
+                        <td class="text-right">
+                            <span t-field="line.price_nettotal"
                                 t-field-options='{"widget": "monetary", "display_currency": "o.pricelist_id.currency_id"}'/>
                         </td>
                     </tr>

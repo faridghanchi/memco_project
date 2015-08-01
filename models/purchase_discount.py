@@ -54,7 +54,7 @@ class purchase_order(models.Model):
             self.amount_total=val1 - self.discount_amt
         return res
    
-    @api.onchange('disc_method','disc_amt')
+    @api.onchange('disc_method','disc_amt','amount_untaxed')
     def _onchange_amt_discount(self):
         if self.disc_method == 'per':
             self.discount_amt = (self.amount_untaxed * self.disc_amt)/100
@@ -119,6 +119,14 @@ class purchase_order_line(models.Model):
     _inherit = 'purchase.order.line'
     
     @api.multi
+    def _amount_line_disc(self):
+        for line in self:
+            if line.line_discount:
+                line.price_nettotal = line.price_subtotal - line.line_discount
+            else:
+                line.price_nettotal = line.price_subtotal
+
+    @api.multi
     @api.depends('order_id.discount_amt')
     def _compute_line_discount(self):
         for line in self:
@@ -130,4 +138,4 @@ class purchase_order_line(models.Model):
                 line.line_discount = line_discount
     
     line_discount = fields.Float(compute= '_compute_line_discount',string='Discount')
-
+    price_nettotal = fields.Float(compute='_amount_line_disc', string='Net Total', digits_compute= dp.get_precision('Account'))

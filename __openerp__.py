@@ -79,7 +79,8 @@
 #        'memco_po_discount/purchase.xml',
         'views/purchase_discount.xml',
         'views/stock_data.xml',
-        'views/report_mrp_wh_mgr_approval.xml'
+        'views/report_mrp_wh_mgr_approval.xml',
+        'views/sale_discount.xml',
     ],
 }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

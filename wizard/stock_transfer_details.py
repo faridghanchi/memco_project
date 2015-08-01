@@ -85,13 +85,21 @@ class stock_transfer_details(models.TransientModel):
                     100*5/20= 25% for Product B.
                     100*5/20= 25% for Product C.
                     
+                    New logic 
             """
-            a = (line['local_carrier_cost']*((100 * line['quantity']) /sum(total_qty)))/100
-            b = (line['international_c_cost']*((100 * line['quantity']) /sum(total_qty)))/100
-            c = (line['unit_lc_cost']*((100 * line['quantity']) /sum(total_qty)))/100
-            line['local_carrier_cost'] = a/line['quantity']
-            line['international_c_cost'] = b/line['quantity']
-            line['unit_lc_cost'] = c/line['quantity']
+#            a = (line['local_carrier_cost']*((100 * line['quantity']) /sum(total_qty)))/100
+#            b = (line['international_c_cost']*((100 * line['quantity']) /sum(total_qty)))/100
+#            c = (line['unit_lc_cost']*((100 * line['quantity']) /sum(total_qty)))/100
+#            line['local_carrier_cost'] = a/line['quantity']
+#            line['international_c_cost'] = b/line['quantity']
+#            line['unit_lc_cost'] = c/line['quantity']
+            a = ((line['local_carrier_cost'] * line['quantity']) /sum(total_qty))
+            b = ((line['international_c_cost'] * line['quantity']) /sum(total_qty))
+            c = ((line['unit_lc_cost'] * line['quantity']) /sum(total_qty))
+            line['local_carrier_cost'] = a
+            line['international_c_cost'] = b
+            line['unit_lc_cost'] = c
+
         res.update(item_ids=items)
         res.update(packop_ids=packs)
         return res

@@ -11,6 +11,10 @@
                     <xpath expr="/form/sheet/notebook/page[@string='Invoice']/field[@name='invoice_line']/tree/field[@name='invoice_line_tax_id']" position='attributes'>
                         <attribute name='invisible'>1</attribute>
                     </xpath>
+                     <xpath expr="/form/sheet/notebook/page[@string='Invoice']/field[@name='invoice_line']/tree/field[@name='price_subtotal']" position='after'>
+                        <field name="line_discount"/>
+                        <field name="price_nettotal"/>
+                    </xpath>
                     <xpath expr="/form/sheet/notebook/page[@string='Invoice']/div/field[@name='tax_line']" position='attributes'>
                         <attribute name='invisible'>1</attribute>
                     </xpath>
@@ -46,6 +50,7 @@
                     <xpath expr="/form/sheet/notebook/page[@string='Invoice Lines']/field[@name='invoice_line']/tree/field[@name='invoice_line_tax_id']" position='attributes'>
                         <attribute name='invisible'>1</attribute>
                     </xpath>
+                   
 <!--                    <xpath expr="/form/sheet/notebook/page[@string='Invoice Lines']/div/field[@name='tax_line']" position='attributes'>-->
 <!--                        <attribute name='invisible'>1</attribute>-->
 <!--                    </xpath>-->

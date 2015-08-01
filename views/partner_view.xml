@@ -9,6 +9,7 @@
                 <data>
                     <field name="function" position="before">
                         <field name='contact_name' />
+                        <field name='partner_ac_type' />
                     </field>
                     <xpath expr="//form/sheet/notebook" position="inside">
                         <page string="Project">
@@ -19,6 +20,20 @@
             </field>
         </record>
 
+        <record id="memco_inherit_partner_searchview1" model="ir.ui.view">
+            <field name="name">res.partner.inherit.search.memco</field>
+            <field name="model">res.partner</field>
+            <field name="type">search</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter"/>
+            <field name="arch" type="xml">
+                <field name="user_id" position="after">
+                    <field name="partner_ac_type" />
+                </field>
+                <xpath expr="//search/group[@string='Group By']" position="inside">
+                    <filter string="Partner Account Type" domain="[]" context="{'group_by':'partner_ac_type'}"/>
+                </xpath>
+            </field>
+        </record>
 
     </data>
 </openerp>

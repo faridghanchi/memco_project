@@ -30,14 +30,14 @@ class account_invoice(models.Model):
     _name = 'account.invoice'
     _inherit = 'account.invoice'
     
-    @api.one
-    @api.depends('invoice_line.price_subtotal', 'tax_line.amount','disc_method')
+    @api.one#order_line.price_subtotal','amount_tax','amount_total','amount_untaxed','disc_amt'
+    @api.depends('invoice_line.price_subtotal', 'tax_line.amount','amount_total','amount_untaxed','disc_amt')
     def _compute_amount(self):
         self.amount_untaxed = sum(line.price_subtotal for line in self.invoice_line)
         self.amount_tax = sum(line.amount for line in self.tax_line)
         self.amount_total = self.amount_untaxed + self.amount_tax - self.discount_amt
         
-    @api.onchange('disc_method','disc_amt')
+    @api.onchange('disc_method','disc_amt','amount_untaxed')
     def _onchange_amt_discount(self):
         if self.disc_method == 'per':
             self.discount_amt = (self.amount_untaxed * self.disc_amt)/100
@@ -125,3 +125,29 @@ class account_invoice(models.Model):
                                      'done': [('readonly',True)]})
     discount_amt = fields.Float(string='-Discount',help="The additional discount on untaxed amount.")
     sale_id = fields.Many2one('sale.order',string="Sale Order")
+    
+    
+class account_invoice_line(models.Model):
+    _inherit = 'account.invoice.line'
+    
+    @api.multi
+    def _amount_line_disc(self):
+        for line in self:
+            if line.line_discount:
+                line.price_nettotal = line.price_subtotal - line.line_discount
+            else:
+                line.price_nettotal = line.price_subtotal
+
+    @api.multi
+    @api.depends('invoice_id.discount_amt')
+    def _compute_line_discount(self):
+        for line in self:
+            if line.price_subtotal:
+                invoice_dicount_amt = line.invoice_id.discount_amt
+                invoice_total_amt = line.invoice_id.amount_untaxed
+                discount_perc = (line.price_subtotal * 100) / invoice_total_amt
+                line_discount = (invoice_dicount_amt * discount_perc)/100
+                line.line_discount = line_discount
+    
+    line_discount = fields.Float(compute= '_compute_line_discount',string='Discount')
+    price_nettotal = fields.Float(compute='_amount_line_disc', string='Net Total', digits_compute= dp.get_precision('Account'))
