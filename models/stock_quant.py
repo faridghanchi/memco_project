@@ -45,10 +45,15 @@ class stock_quant(models.Model):
 
 
     def move_quants_write(self, cr, uid, quants, move, location_dest_id, dest_package_id, context=None):
+        res = super(stock_quant, self).move_quants_write(cr, uid, quants, move, location_dest_id,  dest_package_id, context=context)
+        if move.product_id.valuation == 'real_time':
+            self._account_entry_move(cr, uid, quants, move, context=context)
+        return res
+    def move_quants_write(self, cr, uid, quants, move, location_dest_id, dest_package_id, context=None):
         context=context or {}
-        vals = {'location_id': location_dest_id.id,
-                'history_ids': [(4, move.id)],
-                'reservation_id': False}
+#        vals = {'location_id': location_dest_id.id,
+#                'history_ids': [(4, move.id)],
+#                'reservation_id': False}
         l_cost = []
         i_cost = []
         i = 0
@@ -57,9 +62,27 @@ class stock_quant(models.Model):
             l_cost.append(quant.local_carrier_cost/quant.qty)
             i_cost.append(quant.international_c_cost/quant.qty)
         self.pool.get('stock.move').write(cr, uid, [move.id], {'l_cost': sum(l_cost)/i, 'i_cost': sum(i_cost)/i})
-        if not context.get('entire_pack'):
-            vals.update({'package_id': dest_package_id})
-        self.write(cr, SUPERUSER_ID, [q.id for q in quants], vals, context=context)
+#        if not context.get('entire_pack'):
+#            vals.update({'package_id': dest_package_id})
+#        self.write(cr, SUPERUSER_ID, [q.id for q in quants], vals, context=context)
+        return super(stock_quant, self).move_quants_write(cr, uid, quants, move, location_dest_id,  dest_package_id, context=context)
+        
+#    def move_quants_write(self, cr, uid, quants, move, location_dest_id, dest_package_id, context=None):
+#        context=context or {}
+#        vals = {'location_id': location_dest_id.id,
+#                'history_ids': [(4, move.id)],
+#                'reservation_id': False}
+#        l_cost = []
+#        i_cost = []
+#        i = 0
+#        for quant in quants:
+#            i+=1
+#            l_cost.append(quant.local_carrier_cost/quant.qty)
+#            i_cost.append(quant.international_c_cost/quant.qty)
+#        self.pool.get('stock.move').write(cr, uid, [move.id], {'l_cost': sum(l_cost)/i, 'i_cost': sum(i_cost)/i})
+#        if not context.get('entire_pack'):
+#            vals.update({'package_id': dest_package_id})
+#        self.write(cr, SUPERUSER_ID, [q.id for q in quants], vals, context=context)
         
     def _quant_create(self, cr, uid, qty, move, lot_id=False, owner_id=False, src_package_id=False, dest_package_id=False,
                       force_location_from=False, force_location_to=False, context=None):

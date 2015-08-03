@@ -34,22 +34,12 @@ class sale_order(models.Model):
     
     @api.v7
     def _amount_all(self, cr, uid, ids, field_name, arg, context=None):
-        cur_obj = self.pool.get('res.currency')
-        res = {}
+        res = super(sale_order,self)._amount_all(cr, uid, ids, field_name, arg, context=context)
+#        cur_obj = self.pool.get('res.currency')
+#        res = {}
         for order in self.browse(cr, uid, ids, context=context):
-            res[order.id] = {
-                'amount_untaxed': 0.0,
-                'amount_tax': 0.0,
-                'amount_total': 0.0,
-            }
-            val = val1 = 0.0
-            cur = order.pricelist_id.currency_id
-            for line in order.order_line:
-                val1 += line.price_subtotal
-                val += self._amount_line_tax(cr, uid, line, context=context)
-            res[order.id]['amount_tax'] = cur_obj.round(cr, uid, cur, val)
-            res[order.id]['amount_untaxed'] = cur_obj.round(cr, uid, cur, val1)
-            res[order.id]['amount_total'] = res[order.id]['amount_untaxed'] + res[order.id]['amount_tax'] - order.discount_amt
+
+            res[order.id]['amount_total'] = res[order.id]['amount_untaxed'] - order.discount_amt
         return res
         
     
@@ -75,7 +65,7 @@ class sale_order(models.Model):
 #            self.amount_total=val1 - self.discount_amt
 #        return res
 #   
-    @api.onchange('disc_method','disc_amt','amount_untaxed')
+    @api.onchange('disc_method','disc_amt','amount_untaxed','order_line')
     def _onchange_amt_discount(self):
         if self.disc_method == 'per':
             self.discount_amt = (self.amount_untaxed * self.disc_amt)/100
@@ -94,8 +84,8 @@ class sale_order(models.Model):
                                      'approved': [('readonly',True)],
                                      'done': [('readonly',True)]})
     discount_amt = fields.Float(string='- Discount',help="The additional discount on untaxed amount.")
-    amount_total = fields.Float(compute='_amount_all', digits=dp.get_precision('Account'), string='Total',multi="sums", 
-                help="The total amount")
+#    amount_total = fields.Float(compute='_amount_all', digits=dp.get_precision('Account'), string='Total',multi="sums", 
+#                help="The total amount")
                 
 
 class sale_order_line(models.Model):

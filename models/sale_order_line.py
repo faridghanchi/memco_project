@@ -114,14 +114,25 @@ class sale_order(models.Model):
         product = self.standard_project_id.product_tmpl_id.id
         qty = self.standard_project_id.product_qty
         uom = self.standard_project_id.product_uom.id
-        sol_dir = {
-        'product_id':product,
-        'product_uom_qty':qty,
-        'name':self.standard_project_id.product_tmpl_id.name,
-        'order_id':self.id
-        }
-        create_id = self.env['sale.order.line'].create(sol_dir)
-        self.order_line = [(4, 0, create_id)]
+        if self.standard_project_id.sub_products:
+            for line in self.standard_project_id.sub_products:
+                sol_dir = {
+                'product_id':line.product_id.id,
+                'product_uom_qty':line.product_qty,
+                'name':line.product_id.name,
+                'order_id':self.id
+                }
+                create_id = self.env['sale.order.line'].create(sol_dir)
+                self.order_line = [(4, 0, create_id)]
+#        if not self.standard_project_id.sub_products:
+#            sol_dir = {
+#            'product_id':product,
+#            'product_uom_qty':qty,
+#            'name':self.standard_project_id.product_tmpl_id.name,
+#            'order_id':self.id
+#            }
+#            create_id = self.env['sale.order.line'].create(sol_dir)
+#            self.order_line = [(4, 0, create_id)]
         return True
 
     @api.one
