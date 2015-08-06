@@ -42,7 +42,7 @@
             <field name="arch" type="xml">
                 <data>
                 <xpath expr="/form/group/group/field[@name='date_expected']" position='after'>
-                        <field name="unit_local_c_cost"/>
+                        <field name="unit_local_c_cost" />
                         <field name="unit_inter_c_cost"/>
                         <field name="unit_lc_cost"/>
                         <field name="picking_id" />

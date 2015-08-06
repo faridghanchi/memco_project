@@ -38,7 +38,7 @@ class stock_quant(models.Model):
     unit_lc_cost = fields.Float(string='LC cost')
     total_cost = fields.Float('Total Cost',compute='_get_total')
 
-    @api.multi
+    @api.one
     def _get_total(self):
         if self.local_carrier_cost and self.international_c_cost:
             self.total_cost = self.local_carrier_cost + self.international_c_cost + self.unit_lc_cost
