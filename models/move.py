@@ -25,7 +25,6 @@ from openerp.osv import osv
 
 class stock_move(models.Model):
     """
-    This ml coverd information about bom
     """
     _name = 'stock.move'
     _inherit = 'stock.move'
@@ -142,28 +141,37 @@ class stock_move(models.Model):
                     totC = 100*5/20= 25% for Product C.
                     
                     Unit carrier cost = totA / qty
+
+                Channges:
+                 Product A | Qty=10 price=100 total=1000 discount=10 net total=990
+                 Product A | Qty=10 price=50 total=500 discount=10 net total=490
+                 
+                 total net total=1480
+                 100/1480*990=66.89
+                 100/1480*490=33.11
             """
         total_qty = []
         all_id = []
         all_ids = []
-        print "*****@@@@@@@@@@@@@@", self
-        for a in self:
-#            print '111',a.picking_id.move_lines
-            for mo_line in a.picking_id.move_lines:
+        total_net_total = []
+        for move_data in self:
+            for mo_line in move_data.picking_id.move_lines:
                 if mo_line.id not in all_id: 
                     all_id.append(mo_line.id)
                     total_qty.append(mo_line.product_uom_qty)
-#        print "Total_qty:>>>>", all_id, total_qty
-        for aa in self:
-            for mo_line in aa.picking_id.move_lines:
-#                print "aa.picking_id.carrier_cost :>>>>>>>>>>>", aa.picking_id.i_carrier_cost
+                    total_net_total.append(mo_line.product_uom_qty*mo_line.product_id.standard_price)
+        for data in self:
+            for mo_line in data.picking_id.move_lines:
                 if mo_line.id not in all_ids: 
-                    a = ((aa.picking_id.i_carrier_cost *((100 * mo_line.product_uom_qty) /sum(total_qty)))/100)
-                    b = ((aa.picking_id.l_carrier_cost *((100 * mo_line.product_uom_qty) /sum(total_qty)))/100)
-                    c = ((aa.picking_id.lc_cost *((100 * mo_line.product_uom_qty) /sum(total_qty)))/100)
-                    mo_line.unit_inter_c_cost = a/mo_line.product_uom_qty
-                    mo_line.unit_local_c_cost = b/mo_line.product_uom_qty
-                    mo_line.unit_lc_cost = c/mo_line.product_uom_qty
+                    inter = (((mo_line.product_uom_qty*mo_line.product_id.standard_price) * \
+                            data.picking_id.i_carrier_cost) / sum(total_net_total))
+                    local = (((mo_line.product_uom_qty*mo_line.product_id.standard_price) * \
+                            data.picking_id.l_carrier_cost) / sum(total_net_total))
+                    lc = (((mo_line.product_uom_qty*mo_line.product_id.standard_price) * \
+                            data.picking_id.lc_cost) * sum(total_net_total))
+                    mo_line.unit_local_c_cost = local
+                    mo_line.unit_inter_c_cost = inter
+                    mo_line.unit_lc_cost = lc
         return True
         
    
