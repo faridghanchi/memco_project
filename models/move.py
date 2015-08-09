@@ -22,6 +22,7 @@
 from openerp import models, fields, api, _
 from openerp.tools import float_compare
 from openerp.osv import osv
+from openerp.exceptions import Warning
 
 class stock_move(models.Model):
     """
@@ -161,14 +162,17 @@ class stock_move(models.Model):
                     total_qty.append(mo_line.product_uom_qty)
                     total_net_total.append(mo_line.product_uom_qty*mo_line.product_id.standard_price)
         for data in self:
-            for mo_line in data.picking_id.move_lines:
-                if mo_line.id not in all_ids: 
-                    inter = (((mo_line.product_uom_qty*mo_line.product_id.standard_price) * data.picking_id.i_carrier_cost) / sum(total_net_total))
-                    local = (((mo_line.product_uom_qty*mo_line.product_id.standard_price) * data.picking_id.l_carrier_cost) / sum(total_net_total))
-                    lc = (((mo_line.product_uom_qty*mo_line.product_id.standard_price) * data.picking_id.lc_cost) * sum(total_net_total))
-                    mo_line.unit_local_c_cost = local
-                    mo_line.unit_inter_c_cost = inter
-                    mo_line.unit_lc_cost = lc
+            if data.picking_id.picking_type_id.code == 'incoming':
+                for mo_line in data.picking_id.move_lines:
+                    if mo_line.id not in all_ids:
+                        if not mo_line.product_id.standard_price:
+                            raise Warning ('You must set cost price in Product Configuration!')
+                        inter = (((mo_line.product_uom_qty*mo_line.product_id.standard_price) * data.picking_id.i_carrier_cost) / sum(total_net_total))
+                        local = (((mo_line.product_uom_qty*mo_line.product_id.standard_price) * data.picking_id.l_carrier_cost) / sum(total_net_total))
+                        lc = (((mo_line.product_uom_qty*mo_line.product_id.standard_price) * data.picking_id.lc_cost) * sum(total_net_total))
+                        mo_line.unit_local_c_cost = local
+                        mo_line.unit_inter_c_cost = inter
+                        mo_line.unit_lc_cost = lc
         return True
         
    

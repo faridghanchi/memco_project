@@ -45,7 +45,7 @@
                         </header>
                     </xpath>
                     <xpath expr="/form/sheet/group" position="inside" >
-                        <group string="Standard" >
+                        <group string="Standard" attrs="{'invisible':[('tag','!=','machine')]}">
                             <field name="standard_project_id" domain="[('standard_design','=',True)]" options="{'no_create': True}"/>
                             <button name="button_get_bom_project" states="draft,sent" string="(update)" type="object" class="oe_edit_only oe_link"/>
                         </group>
@@ -56,7 +56,6 @@
                     </field>
                     <field name="date_order" position="after">
                         <field name="estimated_date"/>
-                        <field name="memco_project_id" />
                         <!--field name="send_to_all" attrs="{'invisible': [('state','!=','sent')]}"/-->
                         <field name="users" widget='many2many_tags'/>
                         <field name="tag" />
@@ -67,6 +66,7 @@
 <!--                    </xpath>-->
                     <xpath expr="/form/sheet/notebook/page[@string='Other Information']/group/group/field[@name='origin']" position='after'>
                         <field name='memco_lead_id' string="Lead"/>
+                        <field name="memco_project_id" />
                     </xpath>
 
                     <xpath expr="/form/sheet/notebook/page[@string='Order Lines']/field[@name='order_line']/form/group/group/field[@name='tax_id']" position='attributes'>
