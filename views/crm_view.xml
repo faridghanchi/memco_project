@@ -42,6 +42,19 @@
                         <button attrs="{'invisible': [('probability', 'in', [30,50,60])],'invisible': [('project_design', '=',True)]}" name="case_project_design" string="Project Design" type="object" class="oe_highlight" />
                         <button attrs="{'invisible': [('probability', '=', 100)]}" string="Create Quotation" name="%(sale_crm.action_crm_make_sale)d" type="action" class="oe_highlight"/>
                     </xpath>
+                    
+                    <xpath expr="/form/sheet/div[@class='oe_title']" position="replace">
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1><field name="name"/></h1>
+                            <label for="planned_revenue" class="oe_edit_only" invisible="1"/>
+                            <h2>
+                                <field name="company_currency" invisible="1"/>
+                                <field name="planned_revenue" class="oe_inline" widget="monetary" options="{'currency_field': 'company_currency'}" invisible="1"/>
+                                <field name="probability" class="oe_inline" widget="integer" invisible="1"/>
+                            </h2>
+                        </div>
+                    </xpath>
                 </data>
             </field>
         </record>
