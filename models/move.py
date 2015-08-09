@@ -163,12 +163,9 @@ class stock_move(models.Model):
         for data in self:
             for mo_line in data.picking_id.move_lines:
                 if mo_line.id not in all_ids: 
-                    inter = (((mo_line.product_uom_qty*mo_line.product_id.standard_price) * \
-                            data.picking_id.i_carrier_cost) / sum(total_net_total))
-                    local = (((mo_line.product_uom_qty*mo_line.product_id.standard_price) * \
-                            data.picking_id.l_carrier_cost) / sum(total_net_total))
-                    lc = (((mo_line.product_uom_qty*mo_line.product_id.standard_price) * \
-                            data.picking_id.lc_cost) * sum(total_net_total))
+                    inter = (((mo_line.product_uom_qty*mo_line.product_id.standard_price) * data.picking_id.i_carrier_cost) / sum(total_net_total))
+                    local = (((mo_line.product_uom_qty*mo_line.product_id.standard_price) * data.picking_id.l_carrier_cost) / sum(total_net_total))
+                    lc = (((mo_line.product_uom_qty*mo_line.product_id.standard_price) * data.picking_id.lc_cost) * sum(total_net_total))
                     mo_line.unit_local_c_cost = local
                     mo_line.unit_inter_c_cost = inter
                     mo_line.unit_lc_cost = lc

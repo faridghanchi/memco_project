@@ -92,8 +92,6 @@ class stock_transfer_details(models.TransientModel):
                     cost = line_total * carreier_cost /sum(total_net_total)
                     1000 * 100 / 1500
             """
-            print "local", line['local_carrier_cost']
-            print "inter", line['international_c_cost']
 #            a = (line['local_carrier_cost']*((100 * line['quantity']) /sum(total_qty)))/100
 #            b = (line['international_c_cost']*((100 * line['quantity']) /sum(total_qty)))/100
 #            c = (line['unit_lc_cost']*((100 * line['quantity']) /sum(total_qty)))/100
@@ -111,13 +109,13 @@ class stock_transfer_details(models.TransientModel):
             product = self.pool.get('product.product').browse(cr,uid,line['product_id'])
 #            1000*100/1500
             
-            local = (((line['quantity']*product.standard_price) * line['local_carrier_cost']) /sum(total_net_total))
-            inter = (((line['quantity']*product.standard_price) * line['international_c_cost']) / sum(total_net_total))
-            lc = (((line['quantity']*product.standard_price) * line['unit_lc_cost']) / sum(total_net_total))
+            local_cost = (((line['quantity']*product.standard_price) * line['local_carrier_cost']) /sum(total_net_total))
+            inter_cost = (((line['quantity']*product.standard_price) * line['international_c_cost']) / sum(total_net_total))
+            lc_cost = (((line['quantity']*product.standard_price) * line['unit_lc_cost']) / sum(total_net_total))
             
-            line['local_carrier_cost'] = local
-            line['international_c_cost'] = inter
-            line['unit_lc_cost'] = lc
+            line['local_carrier_cost'] = local_cost
+            line['international_c_cost'] = inter_cost
+            line['unit_lc_cost'] = lc_cost
 
         res.update(item_ids=items)
         res.update(packop_ids=packs)
